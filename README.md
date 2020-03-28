@@ -21,4 +21,4 @@ The two main folders are subdivided by modules. All the lessons related to each 
   - PID control
   - Real vehicle: Self-driving cars architecture and ROS nodes and packages
 
-
+Inside each module folder there is a *project* subfolder containing all the files related to the project of the module.
