@@ -95,6 +95,6 @@ The transformation between the two sets of points is done by *cv2.getPerspective
 
 ## Sample perspective transform
 
-A sample perspective transform is implemented in the *perspective_transformation.py* script. In it, a distorted image is taken as an input and it is undistorted using the camera matrix and distortion coefficients. After that, it is transformed to get a top-down view of the sample chessboard used.
+A sample perspective transform is implemented in the *perspective_transformation.py* script. In it, a distorted image is taken as an input and it is undistorted using the camera matrix and distortion coefficients. After that, it is transformed to get a top-down view of the sample chessboard used. The top-down view is forced to locate the most external internal vertices 100x100 pixels far from the actual image vertices.
 
 
