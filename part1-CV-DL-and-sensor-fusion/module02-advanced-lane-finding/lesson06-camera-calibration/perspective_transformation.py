@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
+# MODIFY THIS FUNCTION TO GENERATE OUTPUT 
+# THAT LOOKS LIKE THE IMAGE ABOVE
 def corners_unwarp(img, nx, ny, mtx, dist):
     # Undistort image
     undist = cv2.undistort(img, mtx, dist, None, mtx)
