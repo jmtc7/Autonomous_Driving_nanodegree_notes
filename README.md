@@ -14,7 +14,7 @@ The two main folders are subdivided by modules. All the lessons related to each 
   - Traffic sign classifier
   - Behavior cloning
   - Extended Kalman Filter
--Part 2: Localization, path planning, control and system integration
+- Part 2: Localization, path planning, control and system integration
   - Kidnapped vehicle: Markov and general localization, motion models and particle filters
   - Online presence: LinkedIn and GitHub improvement
   - Highway driving: Path planning and behavior prediction
