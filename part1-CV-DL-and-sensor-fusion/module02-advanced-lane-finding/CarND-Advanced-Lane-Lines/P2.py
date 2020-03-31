@@ -37,7 +37,7 @@ from moviepy.editor import VideoFileClip
 from IPython.display import HTML
 
 
-# ### Get images and video lists
+# ### List of calibration images
 
 # In[2]:
 
@@ -47,11 +47,6 @@ calibration_images = glob.glob('camera_cal/calibration*.jpg')
 n_calib_imgs = len(calibration_images)
 print(str(n_calib_imgs) + ' detected images for calibration: ' + str(calibration_images))
 print('')
-
-# List 
-video_list = glob.glob('*.mp4')
-n_vids = len(video_list)
-print(str(n_vids) + ' detected videos to process: ' + str(video_list))
 
 
 # ## [PART 1/3] Camera calibration
@@ -319,7 +314,7 @@ def warp_image(img, ysize, xsize):
 
 # ### Sliding window and polynomial fitting
 
-# In[15]:
+# In[8]:
 
 
 def find_lane_pixels(binary_warped, ysize, nwindows, margin, minpix):
@@ -367,10 +362,8 @@ def find_lane_pixels(binary_warped, ysize, nwindows, margin, minpix):
         win_xright_high = rightx_current + margin
 
         # Draw the windows on the visualization image
-        cv2.rectangle(out_img,(win_xleft_low,win_y_low),
-        (win_xleft_high,win_y_high),(0,255,0), 2)
-        cv2.rectangle(out_img,(win_xright_low,win_y_low),
-        (win_xright_high,win_y_high),(0,255,0), 2)
+        cv2.rectangle(out_img, (win_xleft_low,win_y_low), (win_xleft_high,win_y_high),(0,255,0), 2)
+        cv2.rectangle(out_img, (win_xright_low,win_y_low), (win_xright_high,win_y_high),(0,255,0), 2)
 
         ### Identify the nonzero pixels in x and y within the window ###
         # Crop current window
@@ -448,7 +441,7 @@ def fit_polynomial(img, ysize, nwindows=9, margin=100, minpix=50):
 
 # ### Curve radius and car's relative position
 
-# In[16]:
+# In[9]:
 
 
 def get_radius_and_pose(left_fit, right_fit, xsize, lane_length=30, warped_y=720, lane_width=3.7, warped_x=700):
@@ -508,7 +501,7 @@ def get_radius_and_pose(left_fit, right_fit, xsize, lane_length=30, warped_y=720
 
 # ### Inverse lane warping
 
-# In[21]:
+# In[10]:
 
 
 def reverse_lane_warping(img, left_fit, right_fit, xsize, ysize, M_inv):
@@ -557,7 +550,7 @@ def reverse_lane_warping(img, left_fit, right_fit, xsize, ysize, M_inv):
 
 # ### Output frame composition
 
-# In[22]:
+# In[11]:
 
 
 def compose_output_frame(img, poly_img, left_rad, right_rad, rel_pos, xsize, ysize):
@@ -615,7 +608,7 @@ def compose_output_frame(img, poly_img, left_rad, right_rad, rel_pos, xsize, ysi
 # ---
 # ### Define pipeline
 
-# In[23]:
+# In[12]:
 
 
 def pipeline(img):
@@ -649,25 +642,26 @@ def pipeline(img):
 
 # ### Apply pipeline to the videos
 
-# In[24]:
+# In[14]:
 
 
-# For each video in the list
-for idx,v_name in enumerate(video_list):
-    # Print current sequence's name
-    print('Processing video ' + v_name + '...')
-    
-    # Load video and setup output file
-    clip = VideoFileClip(v_name)
-    output = 'output_videos/output_0' + str(idx) + '.mp4'
-    
-    # Process video and save output
-    white_clip = clip.fl_image(pipeline) 
-    get_ipython().run_line_magic('time', 'white_clip.write_videofile(output, audio=False)')
-    
-    # Leave some space between videos
-    print('')
-    print('')
+# Load video and setup output file
+clip = VideoFileClip('project_video.mp4')
+output = 'output_videos/output_00.mp4'
+
+# Process video and save output
+white_clip = clip.fl_image(pipeline) 
+get_ipython().run_line_magic('time', 'white_clip.write_videofile(output, audio=False)')
+
+
+# In[15]:
+
+
+HTML("""
+<video width="960" height="540" controls>
+  <source src="{0}">
+</video>
+""".format(output))
 
 
 # In[ ]:
