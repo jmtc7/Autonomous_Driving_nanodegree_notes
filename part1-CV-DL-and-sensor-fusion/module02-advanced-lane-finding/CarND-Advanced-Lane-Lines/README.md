@@ -124,9 +124,7 @@ Regarding the car position, given that the camera is located in the center of th
 
 ### Step 6. Inverse lane warping
 
-Once having all the data, we can visualize it building a mask using a sampling of the polynomial equations in the warped plane and project this mask back into the original image using the inverse of the used transformation matrix. this will give us the following result:
-
-![Inverse lane warping][image5]
+Once having all the data, we can visualize it building a mask using a sampling of the polynomial equations in the warped plane and project this mask back into the original image using the inverse of the used transformation matrix. The results can be appreciated in the example image of the final results.
 
 
 ### Step 7. Output frame composition
@@ -135,7 +133,7 @@ Finally, in order to visualize the segmented lane, the curve radius (mean of the
 
 This layout and the performance of my implementation can be qualitativelly evaluated in the following frames:
 
-![Sample final results][image6]
+![Sample final results][image5]
 
 
 
