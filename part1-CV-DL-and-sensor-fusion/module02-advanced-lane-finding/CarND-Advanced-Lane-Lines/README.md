@@ -25,8 +25,7 @@ The goals / steps of this project are the following:
 This work will be followed by a brief documentation/overview contained in this file. This project is a completed version of the sample project template provided by the Self-Driving Car Engineer Udemy's nanodegree. The un-completed original version is [this repository](https://github.com/udacity/CarND-Advanced-Lane-Lines).
 
 A demo video of the performance of this approach is available in YouTube:
-[![Demo video](https://www.youtube.com/watch?v=C74pNUi5B5w/0.jpg)](https://www.youtube.com/watch?v=C74pNUi5B5w)
-
+[![Demo video](https://img.youtube.com/vi/C74pNUi5B5w/0.jpg)](https://www.youtube.com/watch?v=C74pNUi5B5w)
 
 
 ## Camera Calibration
