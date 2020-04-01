@@ -1,6 +1,8 @@
 # self-driving-car-nanodegree
-This repository contains both the notes, the challenges and the big projects that I have done during my Udacity self-driving car nanodegree.
 
+[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
+
+This repository contains both the notes, the challenges and the big projects that I have done during my Udacity self-driving car nanodegree.
 
 ## Structure
 
@@ -15,7 +17,7 @@ The two main folders are subdivided by modules. All the lessons related to each 
   - Behavior cloning
   - Extended Kalman Filter
   
--Part 2: Localization, path planning, control and system integration
+- Part 2: Localization, path planning, control and system integration
   - Kidnapped vehicle: Markov and general localization, motion models and particle filters
   - Online presence: LinkedIn and GitHub improvement
   - Highway driving: Path planning and behavior prediction

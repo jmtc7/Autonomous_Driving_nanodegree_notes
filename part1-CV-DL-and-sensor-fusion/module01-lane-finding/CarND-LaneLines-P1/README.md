@@ -1,15 +1,12 @@
 # **Finding Lane Lines on the Road** 
 
-
----
+[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 
 The goal of this project are making a Computer Vision algorithm able to find the lane lines in a video recorded by a camera mounted on the front of a car. This work will be followed by a brief documentation/overview contained in this file. This project is a completed version of the sample project template provided by the Self-Driving Car Engineer Udemy's nanodegree. The un-completed original version is [this repository](https://github.com/udacity/CarND-LaneLines-P1).
 
 A demo video of the performance of this approach is available in YouTube:
 [![Demo video](https://img.youtube.com/vi/DoJ2hLi_qYA/0.jpg)](https://www.youtube.com/watch?v=DoJ2hLi_qYA)
 
-
----
 
 ## Reflection
 

@@ -1,7 +1,5 @@
 # **Advanced Lane Finding Project**
 
----
-
 [![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 
 [//]: # (Image References)
@@ -33,8 +31,6 @@ A demo video of the performance of this approach is available in YouTube:
 
 ## Camera Calibration
 
----
-
 The followed steps in order to perform the camera calibration for this project were:
 
 - Get a **selection of images** of a chessboard with from several X and Y positions, with different inclinations and sizes. This was provided as part of the project template repository.
@@ -50,8 +46,6 @@ Note: This image was taken with the camera used to record the data for the devel
 
 
 ## Pipeline
-
----
 
 My pipeline can be divided in the 7 steps explained during the following sub-sections. In the **iPython Notebook *P2.ipynb***, the code corresponding to all of these sections is contained in properly divided **blocks headed by an identificative title**. They also have **a lot of comments**, so I will keep this writeup brief and focused on explaining the conceps, not the implementation.
 
@@ -146,8 +140,6 @@ This layout and the performance of my implementation can be qualitativelly evalu
 
 
 ## Discussion
-
----
 
 ### Problems during the implementation
 
