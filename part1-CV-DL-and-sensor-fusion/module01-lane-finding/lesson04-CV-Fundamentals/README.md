@@ -1,5 +1,7 @@
 # Computer Vision fundamentals for lane detection
 
+[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
+
 ## Color selection
 We can transform an RGB image to a binary one in which only the pixels whose values in each color channel are higher than certain thresholds. For example, requiring them to be higher than 200 (with values between 0 and 255) will output an image in which only the pixels with a color close to white will be activated.
 

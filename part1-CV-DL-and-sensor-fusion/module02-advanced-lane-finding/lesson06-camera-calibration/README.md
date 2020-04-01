@@ -1,4 +1,6 @@
 # Visual distortion and camera calibration
+
+[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
  
 Robotics can be divided in 3 main parts:
 - Perceive the environment using sensors

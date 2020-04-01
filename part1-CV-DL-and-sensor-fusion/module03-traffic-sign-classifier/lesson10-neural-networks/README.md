@@ -1,5 +1,7 @@
 # Lesson 10. Neural Networks
 
+[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
+
 ## Linear to logistic regression
 
 The two main problems of Machine learning are:

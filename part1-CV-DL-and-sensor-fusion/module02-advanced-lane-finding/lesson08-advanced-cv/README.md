@@ -1,5 +1,7 @@
 # Advanced CV techniques
 
+[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
+
 In order to apply all of the things learned so far to a real project, these are the steps to follow:
 
 - Calibrate the camera.

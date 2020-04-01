@@ -1,5 +1,7 @@
 # Overview of NanoDegree program
 
+[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
+
 There are two main approaches (both of them will be studied during the ND):
 - Robotics-based: Fuse sensors outputs to measure environment and decide how to act.
 - DL-based: Learn to drive given (usually human-generated) examples.
