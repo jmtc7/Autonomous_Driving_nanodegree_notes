@@ -80,8 +80,23 @@ This will get high values from missclassified points and small values from the p
 When we deal with multi-class problems, we will need to use a generic fourmula.
 
 
-## Concept 28. Logistic regression
+## Gradient descent
+
+We can compute the (negative) gradient wherever we are on the error function so that we will get the direction towards which we should move our function in order to minimize the error. This gradient will be the vector formed by the paratial derivatives of the error function respect to the each weight (and the bias). We will repeat this process in order to minimize the error. We will multiply the gradient by the learning rate (*alpha*) in order to avoid dramatic changes. The new weight will be the previous one minus alpha times the partial derivative of the error with respect to the weight that is being updated.
+
+The farther away the prediction is from the actual label, the bigger will be the gradient, forcing the correction to be bigger as well.
 
 
+## Non-linear models
 
+A lot of the data in the real world can not be classified using a linear model. To create non-linear models we need to use several perceptrons or, in other words, create a perceptron network, also known as artificial neural network.
+
+There are two ways in which we can add complexity to our models. (1) Adding more neurons to our layers and (2) adding more layers. Adding more neurons on the input layer means more dimensions in our linear model. With more neurons in our output layer, we will have more outputs, meaning that we will be able to classify between more classes. Adding more layers means combining linear models to create more and more non-linear models to fit more and more complex data distributions.
+
+For multi-class neural networks we will need to add a softmax layer that distributes the scores in probabilities that will add 1.
+
+
+## Backpropagation
+
+This method is the one used to correct the weights of a neural network once the prediction and its error have been computed. It will modify the weights of the deepest layers to listen more or less to each previous node (linear or non-linear model) and the weights of the first layers to adjust the models better to the data.
 
