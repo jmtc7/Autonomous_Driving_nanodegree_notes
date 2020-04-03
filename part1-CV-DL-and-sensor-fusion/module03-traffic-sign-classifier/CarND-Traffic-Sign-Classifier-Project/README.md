@@ -94,8 +94,8 @@ The testing accuracy can be seen (or re-computed) using the iPython notebook con
 
 
 
-# Model testing with new images
-## New image aquisition
+## Model testing with new images
+### New image aquisition
 For this task, I surfed the internet looking for pictures of traffic signs that may be specially challenging in order to test this project. These are the chosen ones:
 
 ![Collection of new images][image7]
@@ -107,6 +107,6 @@ Most of them are not a perfect square almost fitted to the sign, which is alread
 - **Stop**: This was just a normal, ideal(ish) case to see if something unexpected happen.
 - **General caution**: I wanted to test my model using a drawing. It might be exposed to similar data if used in a simulation.
 
-## Performance on new images
+### Performance on new images
 As can be see nin the iPython notebook, the model classifies properly 4 of the 5 images and in the misclassified one, the correct answer is the 2nd option of the network (seen on the top probabilities comparison).
 
