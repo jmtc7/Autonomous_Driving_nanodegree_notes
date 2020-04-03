@@ -22,7 +22,7 @@ As the main results, the archived **validation accuracy** during training was **
 [image3]: ./readme_images/03_class_samples_augmented.png "Samples of each class (after data augmentation)"
 
 [image4]: ./readme_images/04_lenet_original.png "Original LeNet-5 architecture"
-[image5]: ./readme_images/04_lenet_mod.jpeg "Modified LeNet-5 architecture"
+[image5]: ./readme_images/05_lenet_mod.jpeg "Modified LeNet-5 architecture"
 [image6]: ./readme_images/06_accuracy_vs_epochs.png "Validation accuracy evolution"
 
 [image7]: ./readme_images/07_new_images.png "New images collection"
