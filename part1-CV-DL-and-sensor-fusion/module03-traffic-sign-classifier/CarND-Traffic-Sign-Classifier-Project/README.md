@@ -18,7 +18,7 @@ As the main results, the archived **validation accuracy** during training was **
 [//]: # (Image References)
 
 [image1]: ./readme_images/01_data_overview.png "Dataset visualization"
-[image2]: ./readme_images/02_samples.png "Samples of each class (original)"
+[image2]: ./readme_images/02_class_samples.png "Samples of each class (original)"
 [image3]: ./readme_images/03_class_samples_augmented.png "Samples of each class (after data augmentation)"
 
 [image4]: ./readme_images/04_lenet_original.png "Original LeNet-5 architecture"
@@ -28,11 +28,11 @@ As the main results, the archived **validation accuracy** during training was **
 [image7]: ./readme_images/07_new_images.png "New images collection"
 
 
-# Data set summary, exploration and preparation
-## Data set summary
+## Data set summary, exploration and preparation
+### Data set summary
 The used dataset is the [**German Traffic Sign Benchmark**](http://benchmark.ini.rub.de/?section=gtsrb&subsection=news), which contains more than 50000 lifelike 32x32 RGB images of more than 40 classes of traffic signs. Each traffic sign is used only once in the dataset and some difficulties are present, such as blurred images, images taken with too much or too few light, etc.
 
-## Exploratory visualization
+### Exploratory visualization
 Here is an exploratory visualization of the data set. Some examples from the dataset can be seen.
 
 ![Data set examples][image1]
@@ -43,12 +43,12 @@ Next, a bar chart showing how many samples of each class has the training set is
 
 It can be appreciated the big different between the ammount of samples of each class, which may difficult the classification of the classes with less examples (not now because I augmented the data to have more samples of the classes with lower representation). This is why I deceided to perform **data augmentation**.
 
-## Data pre-processing
+### Data pre-processing
 Given that the shape is the most relevant feature of the traffic signs (frame and drawings inside), I converted to grayscale. Next, in order to have a mean closer to zero, I normalized the images 
 
 List the used techniques and the reasons why they were chosen.
 
-## Data augmentation
+### Data augmentation
 
 Given the huge lack of homogeneiety in the amount os samples of each class (some have more than 2000 examples and others just over 200), I will perform a data augmentation based on the one on [this](https://github.com/jeremy-shannon/CarND-Traffic-Sign-Classifier-Project/blob/master/Traffic_Sign_Classifier.ipynb) repository that will generate samples for the clasess represented by less than 750 examples until they have at least this ammount of samples.
 
@@ -58,8 +58,8 @@ This was performed by applying 4 random transformation (translation, scaling, wa
 
 
 
-# Architecture design and testing
-## Model architecture
+## Architecture design and testing
+### Model architecture
 Even I started doing some trials with the original LeNet-5 architecture, I ended up using the modified version of the LeNet-5 network proposed in the [Sermanet/LeCunn's approach](http://yann.lecun.com/exdb/publis/pdf/sermanet-ijcnn-11.pdf). They add an **extra convolutional layer in parallel** to the flattening of the last pooling one that will be flattened and concatenated with the output of the other flattening. This gives an array of 800 elements that will be compressed into a 43-element representation by **only one fully connected** layer. These 43 elements will be the logits of the network.
 
 The next image is the original LeNet-5 network:
@@ -77,7 +77,7 @@ In particular, the used model starts receiving  32x32x1 images that are forwarde
 I also use **dropout** with a keeping probability of 75% to foment redundant learning to increase the network's robustness. 
 
 
-## Model training
+### Model training
 I started training with very standard settings (30 epochs, 128 batch size and 0.001 learning rate). As soon as I did the improvements to the model (mainly, data augmentation and network modifications), I realized that **I needed more epochs** to let my model learn more, so I increased them to 50, then to 60 and finally to **75**.
 
 I noticed that the variations in the accuracy curve were pretty abrupt, so I tried decreasing the **learning rate** to **0.0009** to archive a smoother progress.
@@ -85,7 +85,7 @@ I noticed that the variations in the accuracy curve were pretty abrupt, so I tri
 The last observation is part of the reason why I decreased the **batch size** to **100**. I wanted a slower training. Moreover, I thought that it may cause a similar effect to the one caused by the Stochastic Gradient Descent (SGD).
 
 
-## Results
+### Results
 After all my work, I managed to get a **99.2% of validation accuracy**, which decreased to **94.3% when testing** it with absolutelly new images from the dataset that were not related at all with the training or validation sets (both their original and augmentated versions). The next is an image showing the reached validation accuracy and its evolution across the training process:
 
 ![Validation accuracy evolution][image6]
