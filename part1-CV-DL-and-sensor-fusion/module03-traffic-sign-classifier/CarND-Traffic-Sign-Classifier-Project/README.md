@@ -1,5 +1,4 @@
 # **Traffic Sign Classifier** 
----
 ### Project from the third module of the Self-Driving Car Engineer Udacity's Nanodegree
 
 [![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
@@ -31,7 +30,6 @@ As the main results, the archived **validation accuracy** during training was **
 
 
 # Data set summary, exploration and preparation
----
 ## Data set summary
 The used dataset is the [**German Traffic Sign Benchmark**](http://benchmark.ini.rub.de/?section=gtsrb&subsection=news), which contains more than 50000 lifelike 32x32 RGB images of more than 40 classes of traffic signs. Each traffic sign is used only once in the dataset and some difficulties are present, such as blurred images, images taken with too much or too few light, etc.
 
@@ -62,7 +60,6 @@ This was performed by applying 4 random transformation (translation, scaling, wa
 
 
 # Architecture design and testing
----
 ## Model architecture
 Even I started doing some trials with the original LeNet-5 architecture, I ended up using the modified version of the LeNet-5 network proposed in the [Sermanet/LeCunn's approach](http://yann.lecun.com/exdb/publis/pdf/sermanet-ijcnn-11.pdf). They add an **extra convolutional layer in parallel** to the flattening of the last pooling one that will be flattened and concatenated with the output of the other flattening. This gives an array of 800 elements that will be compressed into a 43-element representation by **only one fully connected** layer. These 43 elements will be the logits of the network.
 
@@ -99,7 +96,6 @@ The testing accuracy can be seen (or re-computed) using the iPython notebook con
 
 
 # Model testing with new images
----
 ## New image aquisition
 For this task, I surfed the internet looking for pictures of traffic signs that may be specially challenging in order to test this project. These are the chosen ones:
 
