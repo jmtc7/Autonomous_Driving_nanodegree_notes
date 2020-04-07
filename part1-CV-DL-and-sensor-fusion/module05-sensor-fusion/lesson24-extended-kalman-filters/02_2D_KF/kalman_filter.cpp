@@ -1,18 +1,18 @@
 #include "kalman_filter.h"
 
-KalmanFilter::KalmanFilter() {
-}
+KalmanFilter::KalmanFilter() {}
 
-KalmanFilter::~KalmanFilter() {
-}
+KalmanFilter::~KalmanFilter() {}
 
-void KalmanFilter::Predict() {
+void KalmanFilter::Predict()
+{
   x_ = F_ * x_;
   MatrixXd Ft = F_.transpose();
   P_ = F_ * P_ * Ft + Q_;
 }
 
-void KalmanFilter::Update(const VectorXd &z) {
+void KalmanFilter::Update(const VectorXd &z)
+{
   VectorXd z_pred = H_ * x_;
   VectorXd y = z - z_pred;
   MatrixXd Ht = H_.transpose();

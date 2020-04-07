@@ -89,8 +89,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
       float vy = rho_dot*sin(phi);
 
       // DONE: Initialize state
+      // Using radial vel as a better estimation of the total vel
        ekf_.x_ << px, py, vx, vy;
-       std::cout << "[i] EKF initialised with a RADAR measure (known target velocity)" << std::endl;
+       std::cout << "[i] EKF initialised with a RADAR measure (known target radial velocity)" << std::endl;
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER)
     {
@@ -109,6 +110,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
 
     // done initializing, no need to predict or update
     is_initialized_ = true;
+    
     return;
   }
 
@@ -128,8 +130,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
   long long dt = measurement_pack.timestamp_ - previous_timestamp_; // Elapsed time in microseconds
   dt /= 1000000.0; //Elapsed time in seconds
   previous_timestamp_ = measurement_pack.timestamp_;
-
+  
   // DONE: Update state transmition matrix F (using new elapsed time in seconds)
+  ekf_.F_ = MatrixXd(4, 4);
   ekf_.F_<< 1, 0, dt, 0,
             0, 1, 0,  dt,
             0, 0, 1,  0,
@@ -138,23 +141,23 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
   // DONE: Update the process covariance matrix Q (using 9 for the acceleration noise)
   float noise_ax = 9.0;
   float noise_ay = 9.0;
-
+  
   long long dt_2 = dt * dt;
   long long dt_3 = dt_2 * dt;
   long long dt_4 = dt_3 * dt;
-
+  
   double dt_44 = dt_4/4.0;
   double dt_32 = dt_3/2.0;
-
+  
   ekf_.Q_ = MatrixXd(4, 4);
   ekf_.Q_<< dt_44*noise_ax, 0,              dt_32*noise_ax,   0,
             0,              dt_44*noise_ay, 0,                dt_32*noise_ay,
             dt_32*noise_ax, 0,              dt_2*noise_ax,    0,
             0,              dt_32*noise_ay, 0,                dt_2*noise_ay;
 
-
+  
   ekf_.Predict();
-
+  
   /**
    * Update
    */
@@ -194,4 +197,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
   // print the output
   cout << "x_ = " << ekf_.x_ << endl;
   cout << "P_ = " << ekf_.P_ << endl;
+
+  return;
 }

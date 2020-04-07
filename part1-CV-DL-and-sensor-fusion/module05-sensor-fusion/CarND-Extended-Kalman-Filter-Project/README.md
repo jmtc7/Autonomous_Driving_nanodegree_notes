@@ -1,3 +1,27 @@
+# My README
+
+Some additional resources can be found in the [GitHub for the  Mercedes Nanodegree](https://github.com/udacity/CarND-Mercedes-SF-Utilities). These are:
+- **Matlab scripts** that will generate more data to test the algorithm.
+- **Visualization package**.
+
+
+
+
+
+
+
+---
+
+
+
+
+
+
+
+
+
+
+
 # Extended Kalman Filter Project Starter Code
 Self-Driving Car Engineer Nanodegree Program
 

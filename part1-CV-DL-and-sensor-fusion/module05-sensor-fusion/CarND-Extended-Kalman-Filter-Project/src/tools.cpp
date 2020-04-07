@@ -23,34 +23,39 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations, const vector<
   //// Check that the estimations are not empty
   if(estimations.empty())
   {
-      cout << "CalculateRMSE () - Error - The estimations vector is empty" << endl;
+      std::cout << "[!] ERROR! CalculateRMSE () - The estimations vector is empty" << std::endl;
       return rmse;
   }
   //// Check that the estimations and the GT have the same size
   else if (estimations.size() != ground_truth.size())
   {
-      cout << "CalculateRMSE () - Error - The estimations and the ground truth vector have different sizes" << endl;
+      std::cout << "[!] ERROR! CalculateRMSE () - The estimations and the ground truth vector have different sizes" << std::endl;
       return rmse;
   }
   
 
   // Accumulate squared residuals
-  float residual = 0;
-  for (int i=0; i < estimations.size(); ++i)
+  VectorXd residual;
+  for (unsigned int i=0; i<estimations.size(); i++)
   {
-    residual = estimations[i] + ground_truth[i];
-    rmse[i] = residual*residual;
+    // Compute the residual
+    residual = estimations[i] - ground_truth[i];
+
+    // Accumulate its square
+    //// RMSE w/o index bc each estimation/ground_truth are the 4 state variables...
+    residual = residual.array()*residual.array();
+    rmse += residual;
   }
 
   // Calculate the mean
-  rmse = rmse/estimations.size()
+  rmse = rmse/estimations.size();
 
-  // Calculate the squared root
-  rmse = sqrt(rmse);
+  // Calculate the squared root of the mean error (converting vectorXd to array)
+  //// The array class is for general-purpose. Matrix and Vector are intended for linear algebra
+  rmse = rmse.array().sqrt();
 
   // Return the result
   return rmse;
-
 }
 
 
@@ -60,7 +65,6 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state)
    * DONE:
    * Calculate a Jacobian here.
    */
-
    MatrixXd Hj(3,4);
    Hj << 1, 1, 0, 0,
          1, 1, 0, 0,
