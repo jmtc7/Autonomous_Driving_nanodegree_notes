@@ -14,10 +14,9 @@ In particular, the goals of this project are the following:
 
 The outcome of this project was an end-to-end CNN capable of driving smoothly and at maximum speed without causing any dangerous situations, as prooved in the following YouTube demo:
 
-This work will be followed by a brief documentation/overview contained in this file. This project is a completed version of the sample project template provided by the Self-Driving Car Engineer Udemy's nanodegree. The un-completed original version is [this repository](https://github.com/udacity/CarND-Advanced-Lane-Lines).
-
-A demo video of the performance of this approach is available in YouTube:
 [![Demo video](https://img.youtube.com/vi/UwDVvA04Cvg/0.jpg)](https://www.youtube.com/watch?v=UwDVvA04Cvg)
+
+This work will be followed by a brief documentation/overview contained in this file. This project is a completed version of the sample project template provided by the Self-Driving Car Engineer Udemy's nanodegree. The un-completed original version is [this repository](https://github.com/udacity/CarND-Advanced-Lane-Lines).
 
 
 [//]: # (Image References)

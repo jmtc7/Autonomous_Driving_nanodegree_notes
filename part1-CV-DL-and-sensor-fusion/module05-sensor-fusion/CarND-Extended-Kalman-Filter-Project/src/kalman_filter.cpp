@@ -81,6 +81,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z)
   //// NOTE: FusionEKF.cpp sets "H_" as "Hj_"
   VectorXd y = z - z_pred;
 
+  // Normalize the error's angle for it to be between -pi and pi
   const float pi = 3.141592653589793238;
 
   if (y[1] > pi)
