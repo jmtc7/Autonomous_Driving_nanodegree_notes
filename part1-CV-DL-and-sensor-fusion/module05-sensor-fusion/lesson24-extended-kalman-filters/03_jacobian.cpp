@@ -9,7 +9,8 @@ using std::endl;
 
 MatrixXd CalculateJacobian(const VectorXd& x_state);
 
-int main() {
+int main()
+{
   /**
    * Compute the Jacobian Matrix
    */
@@ -26,7 +27,8 @@ int main() {
   return 0;
 }
 
-MatrixXd CalculateJacobian(const VectorXd& x_state) {
+MatrixXd CalculateJacobian(const VectorXd& x_state)
+{
 
   MatrixXd Hj(3,4);
   // recover state parameters
