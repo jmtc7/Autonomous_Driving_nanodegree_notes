@@ -80,6 +80,14 @@ void KalmanFilter::UpdateEKF(const VectorXd &z)
   // DONE: Compute the rest of the update step
   //// NOTE: FusionEKF.cpp sets "H_" as "Hj_"
   VectorXd y = z - z_pred;
+
+  const float pi = 3.141592653589793238;
+
+  if (y[1] > pi)
+    y[1] -= 2* pi;
+  if (y[1] < -pi)
+    y[1] += 2* pi;
+
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_ * P_ * Ht + R_;
   MatrixXd Si = S.inverse();

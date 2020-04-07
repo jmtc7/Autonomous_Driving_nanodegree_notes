@@ -71,9 +71,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
      */
 
     // first measurement
-    cout << "EKF: " << endl;
+    std::cout << "EKF: " << std::endl;
     ekf_.x_ = VectorXd(4);
-    ekf_.x_ << 1, 1, 1, 1;
+    ekf_.x_ << 0, 0, 0, 0;
 
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR)
     {
@@ -90,8 +90,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
 
       // DONE: Initialize state
       // Using radial vel as a better estimation of the total vel
-       ekf_.x_ << px, py, vx, vy;
-       std::cout << "[i] EKF initialised with a RADAR measure (known target radial velocity)" << std::endl;
+      ekf_.x_ << px, py, vx, vy;
+      std::cout << "[i] EKF initialised with a RADAR measure (known target radial velocity)" << std::endl;
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER)
     {
@@ -127,7 +127,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
    */
 
   // DONE: Compute elapsed time (in seconds) and update last timestamp
-  long long dt = measurement_pack.timestamp_ - previous_timestamp_; // Elapsed time in microseconds
+  float dt = measurement_pack.timestamp_ - previous_timestamp_; // Elapsed time in microseconds
   dt /= 1000000.0; //Elapsed time in seconds
   previous_timestamp_ = measurement_pack.timestamp_;
   
@@ -142,9 +142,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
   float noise_ax = 9.0;
   float noise_ay = 9.0;
   
-  long long dt_2 = dt * dt;
-  long long dt_3 = dt_2 * dt;
-  long long dt_4 = dt_3 * dt;
+  float dt_2 = dt * dt;
+  float dt_3 = dt_2 * dt;
+  float dt_4 = dt_3 * dt;
   
   double dt_44 = dt_4/4.0;
   double dt_32 = dt_3/2.0;
@@ -195,8 +195,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
   }
 
   // print the output
-  cout << "x_ = " << ekf_.x_ << endl;
-  cout << "P_ = " << ekf_.P_ << endl;
+  std::cout << "x_ = " << ekf_.x_ << std::endl;
+  std::cout << "P_ = " << ekf_.P_ << std::endl;
 
   return;
 }
