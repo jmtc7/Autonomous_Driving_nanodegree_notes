@@ -75,7 +75,7 @@ L   8.45    0.25    1477010443349642    8.45    0.25    -3.00027    0
 ## Obtained results
 The result after running this EKF and sensor fusion based tracker over the given testing data is the following:
 
-![Visualization of the result][./readme_images/result.png]
+![Visualization of the result]()./readme_images/result.png)
 
 It can be appreciated that, as mentioned before, it managed to reach RMSEs of 0.0973, 0.0855, 0.4513 and 0.4399 for the target's X and Y positions an velocities (px, py, vx, vy). The LIDAR measurements are the red circles, the RADAR ones are the blue ones (with an arrow pointing in the direction of the observed angle), and the pose estimations are the green triangles. The simulation is tracking the blue car using RADAR and LIDAR sensors located on the origin of the coordinates system where the car starts its trajectory.
 
