@@ -14,7 +14,7 @@ In particular, the **goals** of this project are the following:
 - Implement **helper tools** to compute a jacobian matrix and the RMSE.
 
 
-The outcome of this project was a data fusion algorithm for its usage with RADAR and LIDAR sensors based in the Extended Kalman Filter. With the provided testing data, it managed to reach RMSEs of 0.0973, 0.0855, 0.4513 and 0.4399 for the target's X and Y positions and velocities (px, py, vx, vy). This can be visualized in the following **YouTube demo**, where the LIDAR measurements are the red circles, the RADAR ones are the blue ones (with an arrow pointing in the direction of the observed angle), and the pose estimations are the green triangles. The simulation is tracking the blue car using RADAR and LIDAR sensors located on the origin of the coordinates system where the car starts its trajectory.:
+The outcome of this project was a data fusion algorithm for its usage with RADAR and LIDAR sensors based in the Extended Kalman Filter. With the provided testing data, it managed to reach RMSEs of 0.0973, 0.0855, 0.4513 and 0.4399 for the target's X and Y positions and velocities (px, py, vx, vy). This can be visualized in the following **YouTube demo**, where the LIDAR measurements are the red circles, the RADAR ones are the blue ones (with an arrow pointing in the direction of the observed angle), and the pose estimations are the green triangles. The simulation is tracking the blue car using RADAR and LIDAR sensors located on the origin of the coordinates system where the car starts its trajectory:
 
 [![Demo video](https://img.youtube.com/vi/Tm7d8E3J3WI/0.jpg)](https://www.youtube.com/watch?v=Tm7d8E3J3WI)
 
