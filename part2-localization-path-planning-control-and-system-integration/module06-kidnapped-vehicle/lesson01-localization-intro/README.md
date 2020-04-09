@@ -44,3 +44,10 @@ This product (*P(Z|Xi) x P(Xi)*) is what we programmed before, the probability m
 Given our motion problem, the probability of being in the *i* cell in the *t* time is: *P(Xi,t) = sum(P(Xj,t-1) x P(Xi, Xj))*. i.e. the sum of the probabilities of every grid cell (*j*) in the previous moment (*t-1*) multiplied by the probability of the robot ending up in the cell that is being evaluated (*i*). This is what we coded before (suming the probabilities of being in a certain cell taking into account exact, overshooted and undershooted movements). This is known as the ***Theorem of Total Probability*** (*P(A) = sum(P(A|B) x P(B))*) and is what we used to define *P(Z)* in the last paragraph. This *weighted sum operation* is called a ***convolution***.
 
 
+## Additional resources
+Some interesting resources related with Bayesian Methods are:
+
+- [Sebastian Discusses Bayes Rule](https://classroom.udacity.com/nanodegrees/nd013/parts/30260907-68c1-4f24-b793-89c0c2a0ad32/modules/28233e55-d2e8-4071-8810-e83d96b5b092/lessons/3c8dae65-878d-4bee-8c83-70e39d3b96e0/concepts/487221690923?contentVersion=2.0.0&contentLocale=en-us)
+- [More Bayes Rule Content from Udacity](https://classroom.udacity.com/courses/st101/lessons/48703346/concepts/483698470923)
+- [Bayes Rule with Ratios](https://betterexplained.com/articles/understanding-bayes-theorem-with-ratios)
+- [A Deep Dive into Bayesian Methods, for Programmers](http://greenteapress.com/wp/think-bayes)
