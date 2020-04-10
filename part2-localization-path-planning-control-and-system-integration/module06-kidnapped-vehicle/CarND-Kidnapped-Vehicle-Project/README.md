@@ -38,4 +38,3 @@ Once the install for uWebSocketIO is complete, the main program can be built and
 
 ## Testing data
 The data used in the simulation (*map_data.txt*) is provided in a text file in the *data* folder of this repository. It consists in a series of landmark positions (X and Y coordinates in the global map coordinate system) followed by the landmark ID. The rest of the necessary data is provided by the [simulator](https://github.com/udacity/self-driving-car-sim/releases), such as the car velocity and yaw rate or the car observations in each filter iteration.
-
