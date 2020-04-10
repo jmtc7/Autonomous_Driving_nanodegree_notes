@@ -47,7 +47,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[])
     particle.x = dist_x(gen); 
     particle.y = dist_y(gen);
     particle.theta = dist_theta(gen);
-    particle.weight = 1;
+    particle.weight = 1.0;
 
     // Append particle to PF's list
     particles.push_back(particle);
@@ -66,17 +66,18 @@ void ParticleFilter::init(double x, double y, double theta, double std[])
 // DONE
 void ParticleFilter::prediction(double delta_t, double std_pos[], double velocity, double yaw_rate)
 {
-  unsigned int n_particles = particles.size();
-
   // Random engine for the sampling
   std::default_random_engine gen;
 
-  for(unsigned int i=0; i<n_particles; i++)
+  for(int i=0; i<num_particles; i++)
   {
+    // Get current particle
+    Particle particle = particles[i];
+
     // Get current pose
-    float x = particles[i].x;
-    float y = particles[i].y;
-    float theta = particles[i].theta;
+    float x = particle.x;
+    float y = particle.y;
+    float theta = particle.theta;
 
     // Compute new pose using the Bicycle Motion Model
     float new_x, new_y, new_theta;
@@ -91,11 +92,10 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
     }
     else
     {
-      // Use general bicycle motion model
+      // Use general bicycle motion model to compute the means
       new_theta = theta + (yaw_rate*delta_t);
       new_x = x + (velocity/yaw_rate) * (sin(new_theta) - sin(theta));
       new_y = y + (velocity/yaw_rate) * (cos(theta) - cos(new_theta));
-      
     }
 
     // Normal distributions to be sampled
@@ -137,8 +137,8 @@ void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted, vector<Landm
     for(unsigned int j=0; j<n_predicted; j++)
     {
       // Get prediction
-      float pred_x = predicted[i].x;
-      float pred_y = predicted[i].y;
+      float pred_x = predicted[j].x;
+      float pred_y = predicted[j].y;
 
       // Compute distances
       float distance = dist(obs_x, obs_y, pred_x, pred_y);
@@ -160,19 +160,19 @@ void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted, vector<Landm
 // DONE
 void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], const vector<LandmarkObs> &observations, const Map &map_landmarks)
 {
-  // Number of particles observations
-  unsigned int n_particles = particles.size();
-
   // Container for all the weights of the particles (for further normalization)
   float weight_normalizer = 0.0;
 
   // For each particle
-  for(unsigned int i=0; i<n_particles; i++)
+  for(int i=0; i<num_particles; i++)
   {
+    // Copy the current particle
+    Particle particle = particles[i];
+
     // Get current particle's properties
-    float car_x_pos = particles[i].x;
-    float car_y_pos = particles[i].y;
-    float car_theta = particles[i].theta;
+    float car_x_pos = particle.x;
+    float car_y_pos = particle.y;
+    float car_theta = particle.theta;
 
 
     // STEP 1. TRANSFORM OBSERVATIONS FROM THE CAR'S COORDINATE SYSTEM TO THE MAP ONE
@@ -225,14 +225,14 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], c
     // STEP 3. COMPUTE WEIGHTS BASED ON DISTANCES (Multivariate Gaussian Distribution)
     //// https://en.wikipedia.org/wiki/Multivariate_normal_distribution
     // Reset particle weight to 1
-    particles[i].weight = 1.0;
+    particle.weight = 1.0;
 
     // Compute the normalizer
     float sigma_x = std_landmark[0];
     float sigma_y = std_landmark[1];
-    float sigma_x_2 = sigma_x*sigma_x;
-    float sigma_y_2 = sigma_y*sigma_y;
-    float normalizer = 1.0/(2.0*M_PI*sigma_x_2*sigma_y_2);
+    float sigma_x_2 = pow(sigma_x, 2);
+    float sigma_y_2 = pow(sigma_y, 2);
+    float normalizer = 1.0/(2.0*M_PI*sigma_x*sigma_y);
 
     // Compute non-normalized weight
     // For each tranformed observation
@@ -260,17 +260,17 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], c
         {
           // Importance weight - Based on the Multivariate Gaussian Probability Function
           multivar_gauss_prob = normalizer*exp(-((pow(trans_obs_x-pred_landm_x, 2)/sigma_x_2) + (pow(trans_obs_y-pred_landm_y, 2)/sigma_y_2)));
-          particles[i].weight *= multivar_gauss_prob;
+          particle.weight *= multivar_gauss_prob;
         }
       }
     }
 
     // Add non-normalized weight to the normalizer count
-    weight_normalizer += particles[i].weight;
+    weight_normalizer += particle.weight;
   }
 
   // STEP 4. NORMALIZE WEIGHTS
-  for(unsigned int i=0; i<n_particles; i++)
+  for(int i=0; i<num_particles; i++)
   {
     particles[i].weight /= weight_normalizer;
     weights[i] = particles[i].weight;
@@ -291,26 +291,23 @@ void ParticleFilter::resample()
   std::default_random_engine gen;
 	
 	//Generate random particle index
-	std::uniform_int_distribution<int> particle_index(0, num_particles - 1);
+	std::uniform_int_distribution<int> particle_index(0, num_particles-1);
   int rand_index = particle_index(gen);
 
   // Helper variables
   float beta = 0.0;
   float double_max_weight = *max_element(weights.begin(), weights.end()) * 2;
 
-  // Number of particles observations
-  unsigned int n_particles = particles.size();
-
   // For each particle
-  for(unsigned int i=0; i<n_particles; i++)
+  for(int i=0; i<num_particles; i++)
   {
-    std::uniform_int_distribution<int> random_weight(0, double_max_weight);
+    std::uniform_real_distribution<float> random_weight(0.0, double_max_weight);
     beta += random_weight(gen);
     
     while(beta>weights[rand_index])
     {
       beta -= weights[rand_index];
-      rand_index = (rand_index + 1) % n_particles;
+      rand_index = (rand_index + 1) % num_particles;
     }
 
     resampled_particles.push_back(particles[rand_index]);
