@@ -25,7 +25,7 @@ using std::vector;
 void ParticleFilter::init(double x, double y, double theta, double std[])
 {
   // Set the number of particles
-  num_particles = 100; 
+  num_particles = 50; 
 
   // Random engine for the sampling
   std::default_random_engine gen;
@@ -225,7 +225,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], c
     // STEP 3. COMPUTE WEIGHTS BASED ON DISTANCES (Multivariate Gaussian Distribution)
     //// https://en.wikipedia.org/wiki/Multivariate_normal_distribution
     // Reset particle weight to 1
-    particle.weight = 1.0;
+    particles[i].weight = 1.0;
 
     // Compute the normalizer
     float sigma_x = std_landmark[0];
@@ -260,13 +260,13 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], c
         {
           // Importance weight - Based on the Multivariate Gaussian Probability Function
           multivar_gauss_prob = normalizer*exp(-((pow(trans_obs_x-pred_landm_x, 2)/sigma_x_2) + (pow(trans_obs_y-pred_landm_y, 2)/sigma_y_2)));
-          particle.weight *= multivar_gauss_prob;
+          particles[i].weight *= multivar_gauss_prob;
         }
       }
     }
 
     // Add non-normalized weight to the normalizer count
-    weight_normalizer += particle.weight;
+    weight_normalizer += particles[i].weight;
   }
 
   // STEP 4. NORMALIZE WEIGHTS
