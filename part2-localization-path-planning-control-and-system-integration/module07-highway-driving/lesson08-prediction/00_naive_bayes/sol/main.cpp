@@ -14,12 +14,11 @@ using std::vector;
 vector<vector<double> > Load_State(string file_name);
 vector<string> Load_Label(string file_name);
 
-int main()
-{
-  vector< vector<double> > X_train = Load_State("./support/nd013_pred_data/train_states.txt");
-  vector< vector<double> > X_test  = Load_State("./support/nd013_pred_data/test_states.txt");
-  vector< string > Y_train = Load_Label("./support/nd013_pred_data/train_labels.txt");
-  vector< string > Y_test  = Load_Label("./support/nd013_pred_data/test_labels.txt");
+int main() {
+  vector< vector<double> > X_train = Load_State("./train_states.txt");
+  vector< vector<double> > X_test  = Load_State("./test_states.txt");
+  vector< string > Y_train = Load_Label("./train_labels.txt");
+  vector< string > Y_test  = Load_Label("./test_labels.txt");
     
   cout << "X_train number of elements " << X_train.size() << endl;
   cout << "X_train element size " << X_train[0].size() << endl;
@@ -34,12 +33,10 @@ int main()
   cout << "Y_test number of elements " << Y_test.size() << endl;
   
   int score = 0;
-  for (int i = 0; i < X_test.size(); ++i)
-  {
+  for (int i = 0; i < X_test.size(); ++i) {
     vector<double> coords = X_test[i];
     string predicted = gnb.predict(coords);
-    if (predicted.compare(Y_test[i]) == 0)
-    {
+    if (predicted.compare(Y_test[i]) == 0) {
       score += 1;
     }
   }
@@ -51,20 +48,17 @@ int main()
 }
 
 // Load state from .txt file
-vector<vector<double> > Load_State(string file_name)
-{
+vector<vector<double> > Load_State(string file_name) {
   ifstream in_state_(file_name.c_str(), ifstream::in);
   vector< vector<double >> state_out;
   string line;
     
-  while (getline(in_state_, line))
-  {
+  while (getline(in_state_, line)) {
     std::istringstream iss(line);
     vector<double> x_coord;
       
     string token;
-    while (getline(iss,token,','))
-    {
+    while (getline(iss,token,',')) {
       x_coord.push_back(stod(token));
     }
     state_out.push_back(x_coord);
@@ -74,13 +68,11 @@ vector<vector<double> > Load_State(string file_name)
 }
 
 // Load labels from .txt file
-vector<string> Load_Label(string file_name)
-{
+vector<string> Load_Label(string file_name) {
   ifstream in_label_(file_name.c_str(), ifstream::in);
   vector< string > label_out;
   string line;
-  while (getline(in_label_, line))
-  {
+  while (getline(in_label_, line)) {
     std::istringstream iss(line);
     string label;
     iss >> label;

@@ -206,10 +206,10 @@ string GNB::predict(const vector<double> &sample)
       // Compute Gaussian Naive Bayes's probabilities
       left_prob = (1 / sqrt(2 *M_PI*pow(left_var[idx], 2)))
                 * exp(-pow(sample[idx]-left_mean[idx], 2) / (2*pow(left_var[idx], 2)));
-      keep_prob = (1 / sqrt(2 *M_PI*pow(left_var[idx], 2)))
-                * exp(-pow(sample[idx]-left_mean[idx], 2) / (2*pow(left_var[idx], 2)));
-      right_prob = (1 / sqrt(2 *M_PI*pow(left_var[idx], 2)))
-                * exp(-pow(sample[idx]-left_mean[idx], 2) / (2*pow(left_var[idx], 2)));
+      keep_prob = (1 / sqrt(2 *M_PI*pow(keep_var[idx], 2)))
+                * exp(-pow(sample[idx]-keep_mean[idx], 2) / (2*pow(keep_var[idx], 2)));
+      right_prob = (1 / sqrt(2 *M_PI*pow(right_var[idx], 2)))
+                * exp(-pow(sample[idx]-right_mean[idx], 2) / (2*pow(right_var[idx], 2)));
   }
   
   // Include prior
