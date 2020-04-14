@@ -1,7 +1,8 @@
 #ifndef PID_H
 #define PID_H
 
-class PID {
+class PID
+{
  public:
   /**
    * Constructor

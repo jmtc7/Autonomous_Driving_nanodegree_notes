@@ -1,30 +1,50 @@
 #include "PID.h"
 
 /**
- * TODO: Complete the PID class. You may add any additional desired functions.
+ * DONE: Complete the PID class. You may add any additional desired functions.
  */
 
 PID::PID() {}
 
 PID::~PID() {}
 
-void PID::Init(double Kp_, double Ki_, double Kd_) {
+void PID::Init(double Kp_, double Ki_, double Kd_)
+{
   /**
-   * TODO: Initialize PID coefficients (and errors, if needed)
+   * DONE: Initialize PID coefficients (and errors, if needed)
    */
+  Kp = Kp_;
+  Ki = Ki_;
+  Kd = Kd_;
 
+  return;
 }
 
-void PID::UpdateError(double cte) {
+void PID::UpdateError(double cte)
+{
   /**
-   * TODO: Update PID errors based on cte.
+   * DONE: Update PID errors based on cte.
    */
 
+  // Differential error -> d(cte(t))/dt -> (current_cte-last_cte)/(current_time-last_time)
+  //// p_error is still storing the last cte
+  //// dt = 1 assumed (no time reference, 1 time step)
+  d_error = cte-p_error;
+
+  // Proportional error -> CTE
+  p_error = cte;
+
+  // Integral error -> integral(cte(t)*dt) -> sum(cte(t))
+  i_error += cte;
+
+  return;
 }
 
-double PID::TotalError() {
+double PID::TotalError()
+{
   /**
-   * TODO: Calculate and return the total error
+   * DONE: Calculate and return the total error
    */
-  return 0.0;  // TODO: Add your total error calc here!
+
+  return -d_error-p_error-i_error;  
 }
