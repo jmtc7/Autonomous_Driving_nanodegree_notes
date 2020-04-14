@@ -124,9 +124,9 @@ int main()
           int prev_traj_size = previous_path_x.size();
 
 
-          //*****************************************************
-          // STEP 4: GET INFO FROM OTHER VEHICLES (SENSOR FUSION)
-          //*****************************************************
+          //************************************************************
+          // STEP 4 [DONE]: GET INFO FROM OTHER VEHICLES (SENSOR FUSION)
+          //************************************************************
 
           // List of all other cars on the same side of the road.
           auto sensor_fusion = j[1]["sensor_fusion"];
@@ -197,6 +197,11 @@ int main()
           vector<double> next_x_vals;
           vector<double> next_y_vals;
 
+
+          //***********************************
+          // STEP 5.1. [DONE] BEHAVIOR PLANNING
+          //***********************************
+
           // Decide what to do if the ego car is following a slow car 
           double delta_vel = 0.0; // Velocity increment to be applied afterwards
           const double MAX_SPEED = 49.5;
@@ -242,6 +247,10 @@ int main()
               delta_vel += MAX_ACC; // Increase velocity
           }
 
+
+          //***********************************
+          // STEP 5.2. [DONE] TRAJECTORY GENERATION
+          //***********************************
 
           // Use an spline to generate a smooth trajectory (avoid high perks)
           // Vectors to store the trajectory points 
