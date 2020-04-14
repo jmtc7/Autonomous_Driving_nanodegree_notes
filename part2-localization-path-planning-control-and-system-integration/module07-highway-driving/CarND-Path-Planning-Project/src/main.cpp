@@ -33,9 +33,10 @@ int main()
   double max_s = 6945.554;
 
 
-  //*******************************************************
-  // STEP 1: Open file with list of waypoints and read them
-  //*******************************************************
+  //********************************************************
+  // STEP 1: OPEN FILE WITH THE WAYPOINTS LIST AND READ THEM
+  //********************************************************
+
   std::ifstream in_map_(map_file_.c_str(), std::ifstream::in);
 
   string line;
@@ -59,9 +60,11 @@ int main()
     map_waypoints_dy.push_back(d_y);
   }
 
+
   //*************************************
   // STEP 2 [DONE]: SETUP SOME PARAMETERS
   //*************************************
+
   // Lane in which the ego car will drive (it will be modified by the ones where the waypoints are)
   //// 0 left, 1 middle, 2 right
   int lane = 1; 
@@ -69,7 +72,7 @@ int main()
   // Target velocity (MPH)
   //// At which the car will try to drive
   //// Slightly below the speed limit
-  double ref_vel = 49.5;
+  double ref_vel = 0.0;
 
 
   
@@ -93,11 +96,12 @@ int main()
         
         if (event == "telemetry")
         {
-          //**********************************
-          // STEP 3: Get our localization data
-          //**********************************
-          //// i.e. Frenet coords, car angle and speed, etc
 
+
+          //****************************************
+          // STEP 3: GET EGO CAR'S LOCALIZATION DATA
+          //****************************************
+          //// i.e. Frenet coords, car angle and speed, etc
           // j[1] is the data JSON object
           
           // Main car's localization Data
@@ -121,51 +125,125 @@ int main()
 
 
           //*****************************************************
-          // STEP 4: Get info from other vehicles (sensor fusion)
+          // STEP 4: GET INFO FROM OTHER VEHICLES (SENSOR FUSION)
           //*****************************************************
 
           // List of all other cars on the same side of the road.
           auto sensor_fusion = j[1]["sensor_fusion"];
 
+          // If there are any unprocessed points, set the "s" of the state to the last of them
+          if(prev_traj_size > 0)
+            car_s = end_path_s;
 
-          //**************************************************
-          // STEP 5 [DONE]: Define a trajectory to be followed
-          //**************************************************
+          // Environment flags
+          bool car_ahead = false; // If the ego car has a car in front of it that is too close
+          bool car_left = false; // If there is a car on the left lane (preventing us from changing to it)
+          bool car_right = false;  // If there is a car on the right lane (preventing us from changing)
+
+          // Find near cars in front of the ego car which are in the same lane
+          //// Iterate through all the detected cars
+          //// Each "sensor_fusion" element is this info of one car: [id, x, y, vx, vy, s, d]
+          for(int i=0; i<sensor_fusion.size(); i++)
+          {
+            // Get analysed car's "d"
+            double d = sensor_fusion[i][6];
+
+            // Get in which lane the analysed car is driving
+            int anal_car_lane = -1;
+
+            if(d>0 and d<4)
+              anal_car_lane = 0;
+            else if(d>4 and d<8)
+              anal_car_lane = 1;
+            else if(d>8 and d<12)
+              anal_car_lane = 2;
+            else
+              continue; // If the car is not in the right side of the road, pass to the next car
+            
+
+            // If the car is in the right side of the road (i.e. driving in the same direction as the ego car)
+            // Get analysed car's velocity
+            double vel_x = sensor_fusion[i][3];
+            double vel_y = sensor_fusion[i][4];
+            double mag_vel = sqrt(pow(vel_x,2) + pow(vel_y,2)); // Magnitude of the velocity
+
+            // Get analysed car's "s"
+            double s = sensor_fusion[i][5];
+
+            // Project the "s" value further away
+            //// If we are using points from the previous path
+            //// The ego car has observed something now, but it is not there yet, it has to finish the previous path before
+            //// A constant "mag_vel" is assumed to be constant for all the points on the previous trajectory
+            s += (double)prev_traj_size*mag_vel*0.02;
+
+            // Set flags depending on which lane the analysed car is driving on
+            //// Danger is considered at 30 m ahead and +-15 m ahead or behind for lane changes
+            if(anal_car_lane == lane)
+              car_ahead |= s>car_s and s<(car_s+30.0);
+            else if(anal_car_lane == (lane-1))
+              car_left |= s>(car_s-30.0) and s<(car_s+30.0);
+            else if(anal_car_lane == (lane+1))
+              car_right |= s>(car_s-30.0) and s<(car_s+30.0);
+          }
+
+
+
+          //****************************************************
+          // STEP 5 [DONE]: CREATE THE TRAJECTORY TO BE FOLLOWED
+          //****************************************************
 
           json msgJson;
 
           vector<double> next_x_vals;
           vector<double> next_y_vals;
 
-          /*
-          // DONE: 1st trial - Drive in an straight line with constant vel (xy coords)
-          double dist_inc = 0.5;
-          for (int i = 0; i < 50; i++)
-          {
-            next_x_vals.push_back(car_x+(dist_inc*i)*cos(deg2rad(car_yaw)));
-            next_y_vals.push_back(car_y+(dist_inc*i)*sin(deg2rad(car_yaw)));
+          // Decide what to do if the ego car is following a slow car 
+          double delta_vel = 0.0; // Velocity increment to be applied afterwards
+          const double MAX_SPEED = 49.5;
+          const double MAX_ACC = 0.224; // 5m/s^2 applied in 0.02s are a 0.1m/s variation in the velocity, which is 0.224 mph
+          
+          // If there is a car near the ego car ahead of it
+          if (car_ahead)
+          { 
+            std::cout << "[!] WARNING! The car in front is too close!" << std::endl;
+            std::cout << "  [i] Decision: "; 
+            // If we can pass it moving to the left lane
+            if (!car_left and lane>0)
+            {
+              std::cout << "Change to the left lane" << std::endl;
+              lane--; // Change lane left.
+            }
+            // If we can pass it moving to the right lane
+            else if (!car_right and lane!=2)
+            {
+              std::cout << "Change to the right lane" << std::endl;
+              lane++; // Change lane right.
+            }
+            // If it is not possible ot change lane
+            else
+            {
+              std::cout << "Slow down" << std::endl;
+              delta_vel -= MAX_ACC; // Reduce velocity
+            }
           }
-          */
-
-         /*
-          // DONE: 2nd trial - Drive in the ego car's lane using Frenet Coordinates and slower
-          double dist_inc = 0.33; // Advance less each time step to go slower
-          for (int i = 0; i < 50; i++)
+          // If there is no car in front (and too close) of the ego car
+          else 
           {
-            // Increase S the given amount
-            double next_s = car_s + ((i+1)*dist_inc); //i+1 so our first point is different to the last car state
-            // Keep D
-            double next_d = car_d;
+            // If the ego car is not in the middle lane
+            if (lane != 1) 
+            {
+              // If it is possible to change to the middle lane
+              if ((lane==0 and !car_right) or (lane==2 and !car_left)) 
+                lane = 1; // Back to middle lane.
+            }
 
-            // Convert from SD to XY
-            std::vector<double> next_xy = getXY(next_s, next_d, map_waypoints_s, map_waypoints_x, map_waypoints_y);
-
-            next_x_vals.push_back(next_xy[0]);
-            next_y_vals.push_back(next_xy[1]);
+            // If current velocity is below the maximum allowed
+            if (ref_vel < MAX_SPEED) 
+              delta_vel += MAX_ACC; // Increase velocity
           }
-          */
 
-          // DONE: 3rd trial - Use an spline to generate a smooth trajectory (avoid high perks)
+
+          // Use an spline to generate a smooth trajectory (avoid high perks)
           // Vectors to store the trajectory points 
           std::vector<double> pts_x;
           std::vector<double> pts_y;
@@ -180,7 +258,7 @@ int main()
           // If we do not have two points available -> Use the current state and approximate another one
           if(prev_traj_size < 2)
           {
-            //Generate an aproximation of the point before the current state
+            //Generate an approximation of the point before the current state
             double prev_car_x = car_x - cos(car_yaw);
             double prev_car_y = car_y - sin(car_yaw);
 
@@ -258,7 +336,7 @@ int main()
 
           // Push the points that were not processed during the last time step
           //// These will be processed in the next timestep (with the ones created now)
-          for (int i = 0; i<previous_path_x.size(); i++)
+          for (int i = 0; i<prev_traj_size; i++)
           {
             next_x_vals.push_back(previous_path_x[i]);
             next_y_vals.push_back(previous_path_y[i]);
@@ -271,13 +349,23 @@ int main()
           double target_x = 30.0;
           double target_y = s(target_x); //spline value fot x = our horizon (e.g. 30 m)
           double distance = sqrt(pow(target_x,2) + pow(target_y,2));
-          double advance_per_point = distance/(0.02*ref_vel/2.24); //2.24 to convert from MPH to m/s
+          
 
           // Generate as much points as necessary to reach 50 points
           //// The last trajectory may have some points that have not been processed
           double x_add_on = 0; // X offset to generate points
-          for(int i=1; i<50-previous_path_x.size(); i++)
+          for(int i=1; i<50-prev_traj_size; i++)
           {
+            // Variate velocity according to the decissions before
+            ref_vel += delta_vel;
+            if (ref_vel > MAX_SPEED)
+              ref_vel = MAX_SPEED;
+            else if (ref_vel < MAX_ACC)
+              ref_vel = MAX_ACC;
+
+            // Compute how much we need to advance in each time step
+            double advance_per_point = distance/(0.02*ref_vel/2.24); //2.24 to convert from MPH to m/s
+
             // Build point using spline
             double x_point = x_add_on + target_x/advance_per_point;
             double y_point = s(x_point);
@@ -285,9 +373,13 @@ int main()
             // Update x offset and "last point" references
             x_add_on = x_point;
 
+            // Helper variables in order not to use modified values
+            double x_point_cp = x_point;
+            double y_point_cp = y_point;
+
             // Undo the transformation to "simulate" that we have the car at 0 degrees
-            x_point = x_point*cos(ref_yaw) - y_point*sin(ref_yaw);
-            y_point = x_point*sin(ref_yaw) + y_point*cos(ref_yaw);
+            x_point = x_point_cp*cos(ref_yaw) - y_point_cp*sin(ref_yaw);
+            y_point = x_point_cp*sin(ref_yaw) + y_point_cp*cos(ref_yaw);
 
             x_point += ref_x;
             y_point += ref_y;
@@ -297,8 +389,9 @@ int main()
           }
 
 
-
-
+          //***********************************************
+          // STEP 6: ADD TRAJECTORY TO THE MESSAGE AND SEND
+          //***********************************************
 
           msgJson["next_x"] = next_x_vals;
           msgJson["next_y"] = next_y_vals;
