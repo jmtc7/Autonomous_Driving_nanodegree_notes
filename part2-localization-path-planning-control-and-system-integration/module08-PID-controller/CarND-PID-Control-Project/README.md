@@ -3,7 +3,7 @@
 
 [![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 
-The aim of this project is to implement a PID controller that will determine the required steering angle in order to keep a car with constant speed in the center of a single-lane track while driving at a 100 MPH speed.
+The aim of this project is to implement a PID controller that will determine the required steering angle in order to keep a car with constant speed in the center of a single-lane track while driving at a 30 MPH speed.
 
 This project uses the [Term 2 CarND Simulator](https://github.com/udacity/self-driving-car-sim/releases) in order to provide data to the *main.cpp* and to visualize the car behavior and data from the vehicle.
 
@@ -21,7 +21,7 @@ In particular, the **goals** of this project are implementing the following poin
 
 The outcome of this project was a PID controller capable of correct the steering angle of an autonomous car driving at 30 MPH. This can be visualized in the following **YouTube demo**:
 
-[![Demo video](https://img.youtube.com/vi/TODO/0.jpg)](https://www.youtube.com/watch?v=TODO)
+[![Demo video](https://img.youtube.com/vi/FqoRhr8x-64/0.jpg)](https://www.youtube.com/watch?v=FqoRhr8x-64)
 
 
 This work will be followed by a brief documentation/overview contained in this file. This project is a completed version of the sample project template provided by the Self-Driving Car Engineer Udemy's Nanodegree. The un-completed original version is [this repository](https://github.com/udacity/CarND-Path-Planning-Project).
