@@ -46,5 +46,5 @@ double PID::TotalError()
    * DONE: Calculate and return the total error
    */
 
-  return -d_error-p_error-i_error;  
+  return - Kp*p_error - Ki*i_error - Kd*d_error;
 }
