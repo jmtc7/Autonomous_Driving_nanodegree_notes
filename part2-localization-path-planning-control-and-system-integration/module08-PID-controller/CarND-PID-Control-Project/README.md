@@ -8,12 +8,18 @@ The aim of this project is to implement a PID controller that will determine the
 This project uses the [Term 2 CarND Simulator](https://github.com/udacity/self-driving-car-sim/releases) in order to provide data to the *main.cpp* and to visualize the car behavior and data from the vehicle.
 
 
-In particular, the **goals** of this project are implementing the following points in the *src/main.cpp* and *PID.cpp* files:
+In particular, the **goals** of this project are implementing the following points in the *src/main.cpp* and *src/PID.cpp* files:
 
-[TODO]
+- PID **controller** in the *PID.cpp* file, consisting in:
+  - Initialization
+  - Error computation
+  - Error combination
+- PID **usage** in the *src/main.cpp* file.
+- PID gains **fine tunning**.
+  - Explained in the *Gain Tunning* section of this file.
 
 
-The outcome of this project was a PID controller capable of correct the steering angle of an autonomous car driving at high speed (100 MPH) in a track with a single lane. This can be visualized in the following **YouTube demo**:
+The outcome of this project was a PID controller capable of correct the steering angle of an autonomous car driving at 30 MPH. This can be visualized in the following **YouTube demo**:
 
 [![Demo video](https://img.youtube.com/vi/TODO/0.jpg)](https://www.youtube.com/watch?v=TODO)
 
@@ -63,6 +69,23 @@ Tips for setting up your environment can be found [here](https://classroom.udaci
 Fellow students have put together a guide to Windows set-up for the project [here](https://s3-us-west-1.amazonaws.com/udacity-selfdrivingcar/files/Kidnapped_Vehicle_Windows_Setup.pdf) if the environment you have set up for the Sensor Fusion projects does not work for this project. There's also an experimental patch for windows in this [PR](https://github.com/udacity/CarND-PID-Control-Project/pull/3).
 
 
-## Technical Details
-[TODO?]
+## Gain Tuning
+Even the ***Twiddle*** algorithm was proposed on the course as a good Coordinate Ascent (it is explained in this [video](https://www.youtube.com/watch?v=2uQ2BSzDvXs) by Sebastian Thrun), a different strategy was used for the parameter tuning of this project. 
+
+This strategy consisted in the following steps (to get the first set of gains to fine-tune):
+
+- Start will all the control gains at zero.
+- Increase the *proportional* gain `Kp` until the car is able to drive more or less properly with constant oscillations. The fine tuning of this was done with increments of 0.0025. With `Kp` over 0.0100, the car was kind of able to drive, even it was struggling in the curves and showed an obvious **systematic bias** towards the right that made it drive over the right lane line.
+- Increase the *differential* gain `Kd` to reduce the oscillation to make it more robust when driving close to the lane limits. When it reached 0.0075, it was possible to raise `Kp` until 0.0150 and still have a decent response. However, due to the systematic bias, the car was driving very close to the edges, so it missed the road from time to time.
+- Finally, increase the *integral* gain `Ki` to fine-tune the controller in order to try to make the response quicker (even if it caused some overshooting) and to correct the already mentioned offset. Even the smallest increase of this gain had a big effect in oscillations, so `Kd` was increased up to 0.5000 to compensate so. `Kp` was reduced back to 0.0010 so that it will contribute less to generate these oscillations.
+
+After tweaking them a bit more, `Kp=0.0100`, `Ki=0.0001`, and `Kp=0.6000` were the parameters that I ended up with. From this point in advance, I just tweaked them to try to get better performance. What I kept in mind during this more empiric phase of the tunning was:
+
+- Increase `Kp` adds velocity and oscillation.
+- Increase `Ki` adds more velocity and oscillation than `Kp` and also makes the car to drive more centered (removes the systematic bias).
+- Increase `Kd` reduces the oscillations and the velocity.
+
+I saw that the car was not oscillating much, but rather the response was so slow that these small oscillations made it go off the road. This is why I decided to boost all the gains up to `Kp=0.0150`, `Ki=0.0020`, and `Kp=1.5000`. These values, after some further fine tunning, became the next definitive ones: `Kp=0.0150`, `Ki=0.0025`, and `Kp=2.7500`.
+
+Obviously, the system's response will not be the same for different velocities. I tried to adjust it for a velocity of 30 MPH, even it can obviously be used for other velocities. However, specially for higher ones, it may have a more inappropriate behavior, such as more abrupt oscillations.
 

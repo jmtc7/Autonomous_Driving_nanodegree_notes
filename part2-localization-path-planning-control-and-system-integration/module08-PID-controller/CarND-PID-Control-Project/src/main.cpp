@@ -40,9 +40,10 @@ int main()
   PID pid;
   /**
    * DONE: Initialize the pid variable.
+   * DONE: Fine tune PID gains (as explained on README.md)
    */
 
-  pid.Init(0.1, 0.001, 0.01); //TODO: Fine-tune gains
+  pid.Init(0.0150, 0.0025, 2.7500);
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode)
   {
@@ -75,9 +76,8 @@ int main()
           pid.UpdateError(cte);
 
           // Use errors to compute the full error
-          steer_value = pid.TotalError();
+          steer_value = -pid.TotalError();
 
-          // Normalize steer value between -1 and 1
           
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
