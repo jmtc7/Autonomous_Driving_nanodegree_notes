@@ -91,3 +91,14 @@ The [simulator](https://github.com/udacity/self-driving-car-sim/releases/tag/T3_
     - Car's Y velocity in m/s.
     - Car's S position in Frenet coordinates.
     - Car's D position in Frenet coordinates. 
+
+
+## Related Readings
+- [Introduction to Robotics #4: Path-Planning](http://correll.cs.colorado.edu/?p=965)
+- [The path planning problem in depth](https://www.cs.cmu.edu/afs/cs/project/jair/pub/volume9/mazer98a-html/node2.html)
+- [A discussion on What is the difference between path planning and motion planning?](https://robotics.stackexchange.com/questions/8302/what-is-the-difference-between-path-planning-and-motion-planning)
+- [Introduction to robot motion: Robot Motion Planning](http://ais.informatik.uni-freiburg.de/teaching/ss11/robotics/slides/18-robot-motion-planning.pdf)
+- [Introduction to robot motion: Path Planning and Collision Avoidance](http://ais.informatik.uni-freiburg.de/teaching/ss10/robotics/slides/16-pathplanning.pdf)
+- [Path Planning for Collision Avoidance Maneuver](https://www.researchgate.net/publication/267596342_Path_Planning_for_Collision_Avoidance_Maneuver)
+- [Optimal Trajectory Planning for Glass-Handing Robot Based on Execution Time Acceleration and Jerk](https://www.hindawi.com/journals/jr/2016/9329131/)
+- [This discussion on StackExchange can be of interest Which trajectory planning algorithm for minimizing jerk](https://robotics.stackexchange.com/questions/8555/which-trajectory-planning-algorithm-for-minimizing-jerk)
