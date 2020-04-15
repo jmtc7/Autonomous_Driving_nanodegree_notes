@@ -1,0 +1,47 @@
+#!/usr/bin/env python
+
+import math
+import rospy # ROS Python API
+from std_msgs.msg import Float64 # Basic ROS msg type. For sending joint positions
+
+def mover():
+	# Create publishers. One for each joint. Enqueue 10 messages if they collide (asynchronous publishing)
+    pub_j1 = rospy.Publisher('/simple_arm/joint_1_position_controller/command', Float64, queue_size=10)
+    pub_j2 = rospy.Publisher('/simple_arm/joint_2_position_controller/command', Float64, queue_size=10)
+
+	# Register the node to the ROS Master with the name "arm_mover"
+	## init_node() must be used before any other function from rospy
+    rospy.init_node('arm_mover')
+
+	# Set loop frequency to 10 Hz
+	## The main node loop will be executed each 0.1 seconds (aprox.)
+    rate = rospy.Rate(10)
+
+	# Set initial time to 0 and wait until the ROS clock has received something
+    start_time = 0
+
+    while not start_time:
+        start_time = rospy.Time.now().to_sec()
+
+	# Main node loop
+    while not rospy.is_shutdown():
+		# Get elapsed time
+        elapsed = rospy.Time.now().to_sec() - start_time
+
+		# Sample a sinusoid to send the joint values
+        pub_j1.publish(math.sin(2*math.pi*0.1*elapsed)*(math.pi/2))
+        pub_j2.publish(math.sin(2*math.pi*0.1*elapsed)*(math.pi/2))
+
+		# Wait until the next iteration is due
+		## 0.1s due to the 10 Hz rate
+        rate.sleep()
+
+
+# Sequence to execute if this file is being executed directly
+## i.e. not by other file
+if __name__ == '__main__':
+	# RosPy uses exceptions a lot, so it is convinient to use them aswell
+    try:
+        mover()
+    except rospy.ROSInterruptException:
+        pass
