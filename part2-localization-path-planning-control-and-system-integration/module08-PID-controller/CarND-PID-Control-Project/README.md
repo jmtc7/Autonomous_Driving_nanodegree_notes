@@ -89,3 +89,8 @@ I saw that the car was not oscillating much, but rather the response was so slow
 
 Obviously, the system's response will not be the same for different velocities. I tried to adjust it for a velocity of 30 MPH, even it can obviously be used for other velocities. However, specially for higher ones, it may have a more inappropriate behavior, such as more abrupt oscillations.
 
+
+## Related Contents
+- [YouTube video](https://www.youtube.com/watch?v=4Y7zG48uHRo&t=31s) explaining how to use a PID controller for lane positioning.
+- [Theory about PID control](https://www.wikiwand.com/en/PID_controller#/Derivative_term).
+- [Self-Tuning PID Controller for Autonomous Car Tracking in Urban Traffic](http://oa.upm.es/30015/1/INVE_MEM_2013_165545.pdf), by Luciano Alonso, Juan Perez-Oria, Basil M. Al-Hadithi, and Agustin Jimenez.
