@@ -1,0 +1,104 @@
+#!/usr/bin/env python
+
+import math
+import rospy
+from sensor_msgs.msg import Image, JointState # To be able to use image and joint_states messages
+from simple_arm.srv import *
+
+
+# Class to track movement state and position history
+class LookAway(object):
+    def __init__(self):
+        """
+        Initializes the node
+        """
+        rospy.init_node('look_away')
+
+        # Wait for messages to avoid blocking the process
+        rospy.wait_for_message('/simple_arm/joint_states', JointState)
+        rospy.wait_for_message('/rgb_camera/image_raw', Image)
+
+        # To be able to know when the robot is not moving
+        ## Topic: /simple_arm/joint_states
+        ## Type: JointState 
+        ## Callback function: joint_states_callback()
+        self.sub1 = rospy.Subscriber('/simple_arm/joint_states', JointState, self.joint_states_callback)
+
+        # Subscriber to get images from robot's camera
+        self.sub2 = rospy.Subscriber("rgb_camera/image_raw", Image, self.look_away_callback)
+
+        # ROS Service Proxy to call the ROS Service from a node
+        ## Service to be called: /arm_mover/safe_move
+        ## Service class: GoToPosition
+        self.safe_move = rospy.ServiceProxy('/arm_mover/safe_move', GoToPosition)
+
+        self.last_position = None
+        self.arm_moving = False
+
+        rospy.spin()
+
+
+    def uniform_image(self, image):
+        """
+        Checks if all the pixels share its value with the first one.
+        This would mean that the robot is looking at the sky.
+        """ 
+        return all(value == image[0] for value in image)
+
+
+    def coord_equal(self, coord_1, coord_2):
+        """ 
+        Will return 'True' if the input coordinates are very similar. i.e. they are 
+        equal with some tolerance (robustness against errors, approximations, etc.).
+        """ 
+        if coord_1 is None or coord_2 is None:
+            return False
+        tolerance = .0005
+        result = abs(coord_1[0] - coord_2[0]) <= abs(tolerance)
+        result = result and abs(coord_1[1] - coord_2[1]) <= abs(tolerance)
+        return result
+
+
+    def joint_states_callback(self, data):
+        """ 
+        Callback for when a joint state is published. It checks if the robot's position
+        is the same as the previous one to know if the robot has moved. It updates the
+        last position and the moving flag accordingly.
+    
+        ::param data:: Received ROS message (JointState).
+        """ 
+        if self.coord_equal(data.position, self.last_position):
+            self.arm_moving = False
+        else:
+            self.last_position = data.position
+            self.arm_moving = True
+
+
+    def look_away_callback(self, data):
+        """
+        Callback for when an image is published. It creates and sends a GoToPositionRequest
+        if the robot is not moving and it is looking to the sky.
+    
+        ::param data:: Received ROS message (Image).
+        """ 
+        if not self.arm_moving and self.uniform_image(data.data):
+            try:
+                rospy.wait_for_service('/arm_mover/safe_move')
+                msg = GoToPositionRequest()
+                msg.joint_1 = 1.57
+                msg.joint_2 = 1.57
+                response = self.safe_move(msg)
+
+                rospy.logwarn("Camera detecting uniform image. Elapsed time to look at something nicer:\n%s", response)
+
+            # 'except rospy.ServiceException, e:' substituted by this:
+            except rospy.ServiceException as e:
+                rospy.logwarn("Service call failed: %s", e)
+
+
+
+if __name__ == '__main__':
+    try: 
+        LookAway()
+    except rospy.ROSInterruptException:
+        pass
