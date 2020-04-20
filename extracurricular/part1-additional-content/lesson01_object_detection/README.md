@@ -34,21 +34,18 @@ This, given the 8x8 cells, will be more robust to small variations in the sape w
 
 [Here](https://www.youtube.com/watch?v=7S5qXET179I) is a presentation on using Histogram of Oriented Gradient (HOG) features for pedestrian detection by Navneet Dalal, the original developer of HOG for object detection. You can find his original paper on the subject [here](http://lear.inrialpes.fr/people/triggs/pubs/Dalal-cvpr05.pdf). 
 
+NOTE: From now on, a *small* dataset will be used. It is contained in the `dataset` folder and is composed out of images from the [GTI vehicle image database](http://www.gti.ssr.upm.es/data/Vehicle_database.html), the [KITTI vision benchmark suite](http://www.cvlibs.net/datasets/kitti/) and samples from the project video itself. Subsets of the dataset can be downloaded from these links: [vehicles](https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/vehicles_smallset.zip) and [non-vehicles](https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/non-vehicles_smallset.zip) and the full dataset can be accessed from these other ones: [vehicles](https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/vehicles.zip) and [non-vehicles](https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/non-vehicles.zip). For reference, here is the link to the [Udacity labeled dataset](https://github.com/udacity/self-driving-car/tree/master/annotations) in GitHub. Every Udacity dataset comes with a `labels.csv` file containing the bounding box corners of each labeled object. In the `05_car_notcar.py` script, the data can be classified as images containing a car or a non-car object based on the file names. It also generates a dictionary with the image shapes and types.
 
-NOTE: From now on, a *small* dataset will be used. It is contained in the `dataset` folder and is composed out of images from the [GTI vehicle image database](http://www.gti.ssr.upm.es/data/Vehicle_database.html), the [KITTI vision benchmark suite](http://www.cvlibs.net/datasets/kitti/) and samples from the project video itself.
+The [sci-image](http://scikit-image.org/) package contains a function to extract HOG features. A tutorial and explanation of it can be found [here](https://scikit-image.org/docs/dev/auto_examples/features_detection/plot_hog.html). It allows its user to set the number of `orientations` to be in the histogram (usually between 6 and 12), the `pixels_per_cell` (8x8 in the used example), the `cells_per_block` to define how many cells will form a block for the normalization, which is not necessary but usually leads to more robuts results and the `transform_sqrt` flag, which will activate the *power law* or *gamma normalization*. 
 
-### Histograms
-- Histograms of Color
-- Histogram Comparison
+Given `pixels_per_cell=(8, 8)`, `cells_per_block=(2, 2)`, and `orientations=9`, the straightforward assumption is to guess that the resulting feature vector will be *9×8×8=576* elements long. However, when using block normalization, the HOG features for all cells in each block are computed at each block position and the block steps across and down through the image cell by cell. Therefore, the actual ammount of elements will be *7×7×2×2×9=1764*.
 
-### Color Spaces
+It is possible to set the `feature_vector=True` flag when calling the `hog()` function to automatically unroll the features. The `06_get_hog.py` script implements a function that accepts argumetns to choose if we want the feature vector unrolled and a visualization that shows the dominant gradient direction within each cell with brightness corresponding to the strength of gradients in that cell.
 
-### Gradient Features
+### Feature combination
+So far, it is clear that each feature type (color and gradient-based) are useful in their own way, so **combining features** seems to be an interesting thing to do. The simplest way of doing so is to concatenate the feature vector obtained from the color and the gradient-based processings. However, this will provide us with a difference on magnitude regarding the elements of the color part and the gradient part of the combined vector. This is why a **normalization step** may prevent one side from dominating the others when classifying objects. It is also possible to find more elements in one side than in the other. We should try to avoid this, for example, by removing the redundancies. For instance, a **decision tree** could be used to analyze the importance of each feature in order to drop the less relevant ones.
 
-### HOG Features
-
-### Feature Combination and Normalization
-
+The `06_norm_shuffle.py` script uses the `StandardScaler()` function from the `sklearn` package from Python to normalize data. It requires the data to be a NumPy array where each row is a feature vector. In order to do this, a multi-dimensional list is created and converted to the required format. The `extract_features()` function of this script takes in a list of image filenames, reads them one by one, then applies a color conversion (if necessary) and uses `bin_spatial()` and `color_hist()` to generate feature vectors. The function then concatenates those two feature vectors and append the result to a list. After cycling through all the images, it returns the list of feature vectors.
 
 
 ## Classifier Building
