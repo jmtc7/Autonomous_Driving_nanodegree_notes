@@ -48,31 +48,82 @@ So far, it is clear that each feature type (color and gradient-based) are useful
 The `06_norm_shuffle.py` script uses the `StandardScaler()` function from the `sklearn` package from Python to normalize data. It requires the data to be a NumPy array where each row is a feature vector. In order to do this, a multi-dimensional list is created and converted to the required format. The `extract_features()` function of this script takes in a list of image filenames, reads them one by one, then applies a color conversion (if necessary) and uses `bin_spatial()` and `color_hist()` to generate feature vectors. The function then concatenates those two feature vectors and append the result to a list. After cycling through all the images, it returns the list of feature vectors.
 
 
+
 ## Classifier Building
+Once being able to extract representative features out of images, the next step is to build a classifier. The simplest way to do so is to sample small patches all over each frame and classify them as *cars* or *not-cars*. To manage to do so, it will be necessary to **train** the classifier.
 
-### Labeled Data
 ### Data Preparation
-### Training
-### Parameter Tuning
+In order to train a classifier, data is a must. In particular, **labeled data** will be the used one. Therefore, samples of both car and non-car images will be needed. In order to do so, it is possible to crop regions of a larger frame and rescale them to a fixed size (the classifier's input size). Moreover, the used dataset should be balanced. i.e. the amount of samples of each class should be similar to the amount of samples of the other. If the difference between the number of samples of each class is too big, the classifier may try to classify almost everything as the class with more samples because during its training, it learnt that, given an input image, it will be more likely for it to be from this class. Techniques such as data augmentation can be useful to balance the dataset.
 
-### Color-Based Classifier
-### HOG-Based Classifier
+Once having a balanced dataset, the next step is to split it in a training set and a test set. The testing must be performed using unseen data to get proper measurements on the classifier's performance. It is also convenient to shuffle the data while creating the sets to avoid any kind of dependency in the order it is provided. Again, the sets should be balanced regarding the amount of samples of each class.
+
+### Training
+The training phase consist in taking samples from the training set, computing its features and forwarding them through the training algorithm alongside with the labels. This training algorithm will initialize a model and automatically tweak its parameters given the obtained classifications and the actual label assigned to each set of features. In order to do so, an error between the prediction and the ground-truth label is used. The training process will end according to several possible termination criterias, such as when this error is under a certain threshold, when a certain amount of iterations has been completed, etc.
+
+Once the training is over, the test set is used to check how the obtained model performs when evaluating unseen samples. Usually, the test error will be higher than the training one, but both often decrease the more the model is trained, until *overfitting* occurs, which will happen if the model is trained too much. This will make the model to *learn* the training set and not be able to generalize properly to new samples, which will cause the testing error to increase.
+
+Regarding the model, there are many posibilities. In this lesson, a **Support Vector Machine** (SVM) will be used, but some other options are *Decision Trees*, *Neural Networks*, etc. It could even combine multiple classifiers.
+
+### Parameter Tuning
+In order to tune the parameters of the SVM that is going to be used, a kernel and a gamma and C paramaters need to be chosen. When using a linear kernel, only C can be tuned. For non-linear kernels, C and gamma can be tuned.
+
+Python's `Scikit-learn` package provides with some hyperparameter tuning algorithms, such as [GridSearchCV](http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV) or [RandomizedSearchCV](http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV).
+
+`GridSearchCV` will try combinations of a given list os possible values for each hyperparameter and test them against cross-validation to evaluate which performs better. `RandomizedSearchCV` works similarly, but it uses random combinations of the parameters, which makes it faster because there are some combinations that are not tested.
+
+`GridSearchCV` uses 3-fold cross validation, which consists in dividing the training set into 3 equal parts, use two for training and one for validating. Then, another part is chosen for the validation and the other two are used for training. Finally, it repeats again with the last part. It averages the achieved training accuracies for each partition. This will provide with an accuracy for each tested parameter combination. The combination producing the highest accuracy is the chosen one. A sample usage of this wuold be:
+
+```
+parameters = {'kernel':('linear', 'rbf'), 'C':[1, 10]} # Dictionary of parameters to combine
+svr = svm.SVC()                                        # Load the classifier algorithm
+clf = grid_search.GridSearchCV(svr, parameters)        # Create the classifier using the algorithm and the parameters
+clf.fit(iris.data, iris.target)                        # Try all parameter combinations and return a fitted model with the best performing parameters
+clf.best_params_                                       # Access the values of the parameters
+```
+
+### Color and HOG-Based Classifiers
+In order to try a **color-based classifier**, it is possible to reutilize the `bin_spatial()`, `color_hist()` and `extract_features()` functions from the challenges implemented before in this lesson. With the code in `08_color_classifier.py`, an accuracy of 97.7% is achieved. A way of modifying this result is tweaking the `spatial` and `histbin` parameters.
+
+A **HOG-Based Classifier** is implemented in `09_hog_classifier.py`. It returns a 93% of accuracy, which can be modified with the parameters `colorspace`, `orient`, `pix_per_cell`, `cell_per_block`, and `hog_channel`. `hog_channel` can take values of 0, 1, 2, or "ALL", meaning that you extract HOG features from the first, second, third, or all color channels respectively. 
+
 
 
 ## Sliding Windows
-- Ammount of windows
-- Implementation
-- Multi-scale windows
+The idea of this is to scan an image searching the target objects. To do so, a sub-region of the image will be defined and moved accross the image and its content will be forwarded through the trained classifier.
+
+In order to compute how many windows will be necessary for a given image, some information is needed, such as how big the image is, how big will the windows be and how much they will overlap their past positions. Given this information, the number of needed windows is:
+
+```
+windows_x = 1 + (image_width - window_width)/(window_width * overlap_proportion)
+windows_y = 1 + (image_height - window_height)/(window_height * overlap_proportion)
+total_windows = windows_x * windows_y 
+```
+
+An script drawing the sliding windows is implemented in the `10_sliding_window.py` file. It is straightforward the main problem of this approach, which is the scale. In an image took from a car driving in a highway or in an urban environment, cars from different sizes will appear, while the sliding windows, so far, will only search objects from a certain size (the ones containable in one window). 
+
+### Multi-Scale Windows
+To solve this, ***Multi-Scale Windows*** are used. In order to use them, the first thing to do is define minimum and maximum sizes of the windows. i.e. the minimum and maximum sizes that will be considered for the classification. It is also necessary to define how many intermediate scales will be used. This will increase a lot the number of windows to process, which will slow down considerably the algorithm. Some techniques could reduce this computational charge, such as searching only in zones where vehicles are more likely to be, such as the bottom half of the image. It would also be possible to use only one row of each scale because it is fairly easy to estimate where in the image the big and small cars will appear.
+
+A sliding multi-scale window search is implemented in the `11_search_classify.py` script, which uses the helper functions of `11_lesson_functions.py`. The classifier can be trained using the dataset in the `dataset` folder. Using 9 orientations 8 pixels per cell and 2 cells per block, it provides a 98.5% of test accuracy. In order to get other results, tweaking the parameters mentioned in the *Color and HOG-Based Classifiers* sub-section can do it. It is also possible to modify the searching area with `y_start_stop` in the `slide_window()` function.
+
+### HOG Sub-Sampling Window Search
+A way of optimizing the algorithm is computhing the HOG features only once in a way that can be used by the smallest window size. Then, by sub-sampling the generated HOG feature map, features coming from bigger cells will be usable for bigger windows.
+
+In order to test that, the [SVC model](https://s3-us-west-1.amazonaws.com/udacity-selfdrivingcar/files/Vehicle_Detection_Images/svc_pickle.p) and the [test image](https://s3-us-west-1.amazonaws.com/udacity-selfdrivingcar/files/Vehicle_Detection_Images/test_image.jpg) are available in this directory and can be downloaded from the provided links. The files are *svc_pickle.p* and *test_image.jpg*, respectively. This is implemented in the `12_hog_subsample.py` script, which uses the functions of the `12_lesson_functions.py` file.
 - Searching and classifying
   - HOG sub-sampling window classifier
 
 
-## Other Considerations
-### Multiple Detections and False Positives
-### Tracking Pipeline
-### Traditional VS Deep Learning Approaches
+## Solving Overlapping and False Positives
+The built system is able to scan an image searching potential detections. However, as can be appreciated running some of the scripts listed in the other sections, **false positives** are a thing in the outputted images. Some of them may be just non-cars classified as cars, but they can also be multiple detections of the same car.
+
+An useful strategy to combine multiple detections and remove false positives is creating **heat maps**. A black image will be generated and *1* will be added to every pixel inside each detection. This way, the zones in which several detections have been triggered will have high scores and the false positives will have very low ones. By thresholding the map (usually in taking into account more than one frame), it is easy to say where the cars are and how big (i.e. close to the ego car) they are. 
+
+These are the links to download the [bounding boxes](https://s3-us-west-1.amazonaws.com/udacity-selfdrivingcar/files/Vehicle_Detection_Images/bbox_items/bbox_pickle.p) and the [test image](https://s3-us-west-1.amazonaws.com/udacity-selfdrivingcar/files/Vehicle_Detection_Images/bbox_items/test_image.jpg), even they are provided in this folder as *bbox_pickle.p* and *test_image.jpg*. This technique is implemented in the `13_heat_map.py` script.
 
 
+## Summary and further considerations
+The whole pipeline starts by exploring patches of the image using multi-scale sliding windows. For each of these windows, color and HOG features will be computed and combined in a feature vector that will be normalized. Then, a classifier such a SVM will be used (after being trained) to guess if each of these feature vectors corresponds or not to a car. The detections will be stored and used to generate heat maps that will be thresholded (and compared through time) to provide the final output.
 
-
+Comparing this traditional approach with deep neural networks, the feature selection (*feature engineering*), classifier training and image search is performed all at once in the neural network, which will work as a black box in which we will not really know what is happening. However, after studying how to solve the problem by hand, we will have an idea of what is likely to be happening inside the networks trained to solve this problem.
 
