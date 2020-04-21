@@ -9,34 +9,33 @@ If we choose a serious work that has been done over months that was obtained aft
 During this lesson, we will study several options that are widely used for Transfer Leraning.
 
 
-## Transfer Learning usage - practical cases
+## Transfer Learning Usage - Practical Cases
 We will implement TL in one or other way depending on two main factors:
 - How similar is the data of our problem to the data with which te network we are using was trained with.
 - How big is our data set (a big one can be one million of images and a small one 2000, is is very relative).
 
-### Case 1: Similar data, small dataset
+### Case 1: Similar Data, Small Dataset
 We will **remove the end of the network and add one new fully connected layer** that gives us as many outputs as we need (number of classes in the new dataset). We will **randomize** the weights of this **new layer and freeze the rest** of them. Finally, we train this last layer to adapt the knowledge to our data.
 
 The weight freezing is to avoid overfitting (given that we have few samples). We are assuming that the high level features of both datasets will be similar.
 
-### Case 2: Different data, small dataset
+### Case 2: Different Data, Small Dataset
 We will **remove the layers near to the beginning** of the network, the ones that extract the high-level features. We will **add a fully connected** with the outputs that we need and, again, **randomize** its weights **and freeze** the ones of the pre-trained model.
 
 This workflow will use the low-level knowledge of the pre-trained model (lines, edges, shapes), while removing the high level one specific of the dataset with which the network was trained. Again, we freeze the weights to avoid overfitting.
 
-### Case 3: Similar data, large dataset
+### Case 3: Similar Data, Large Dataset
 **Remove the last fully connected and replace it with one that matches our number of classes**. Randomize the weights of the new layer and use the pre-trained weights to initialize the ones of the rest of the network. Finally, we will **retrain all the weights** with our data.
 
 Having a lot of data, overfitting is not a big problem. Since the data will be similar, we can use all the network (including high-level features).
 
-### Case 4: Different data, large dataset
+### Case 4: Different Data, Large Dataset
 **Remove the last** fully connected and **add another one matching our class number**. Now we can:
 - Try to retrain all as in the last case (3, similar&large).
 - Retrain with every weight randomized (using only the architecture).
 
 
-
-## Deep Learning history
+## Deep Learning History
 It all started back on the 90s with the Yann LeCun's LeNet network, used by post offices to recognize hand-written numbers. However, due to the lack of data (solved with the Internet) and computational power (solved with the latest advanced in CPUs and, specially, GPUs).
 
 The [ImageNet](http://www.image-net.org/) data set is a huge collection of hand-labelled images. Due to its existance, the ImageNet Large Scale Visual Recognition Competition, an annual competition about building the best networks for object detection and localization. Now it is hosted in [Kaggle](https://www.kaggle.com/c/imagenet-object-localization-challenge) and it provides 50000 images of objects of 1000 different classes. 
@@ -45,14 +44,12 @@ This big ammount of data makes it really common to use ImageNet to pre-train net
 
 Note: Given the huge ammount of classes in ImageNet, it is highly ulikely that we can consider our data *different* from the one which was used to train the networks explained in the next subsections. i.e. chances are, we will not fall in the *different* data cases explained on the previous section.
 
-
 ### AlexNet
 It reused the concepts in LeNet, but used the highest-end GPUs on 2012 to decrease the training time. It was a pioneer in the usage of Rectified Linea Units (ReLUs) and dropout to avoid overfitting. The winner of last year succeeded classifying the 74% of the images and AlexNet raised it to 85%.
 
 In their [paper](https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf), they explain how parallelizing the network in two different GPUs (communicated in some points of the network) increased the accuracy by 1.7%.
 
 Even today, AlexNet is used as a starting point. Usually, we use a simplified version of it that removes unnecessary features.
-
 
 ### VGGnet
 In 2014 two teams were very close to each other with a 93% of accuracy. One of them was using [VGGnet](https://arxiv.org/pdf/1409.1556.pdf) (or VGG). Its architecture is simple, which makes it great for Transfer Learning. It is formed by 3x3 convolutions, 2x2 pooling layers and three fully connected layers. Its strength is flexibility.
@@ -67,7 +64,6 @@ model = VGG16(weights='imagenet', include_top=False)
 
 We can use *None* instead of *imagenet* to use random weights. We can include or not the last fully connected layer using the *include_top* argument. The input of this network is 224x224.
 
-
 ### GoogLeNet
 The network submitted by Google to the ImageNet competition. It performs slightly better than VGG, but its main advantage is how fast it runs (almost as AlexNet). Its secret are the *inception modules*, which, as explained before, consist in concatenating the output of an average pooling followed by a 1x1 convolution and a 1x1, 3x3 and 5x5 convolutions as the output of the layer (all of them will be applied to the same feature map, they will not be sequential). This can be configures to have a small number of parameters, that is what gives the speed to GoogLeNet. Its paper can be accessed [here](https://arxiv.org/pdf/1409.4842.pdf).
 
@@ -81,7 +77,6 @@ model = InceptionV3(weights='imagenet', include_top=False)
 
 Note: The original inception model input was 224x224 (as the one from VGG) but the one of InceptionV3 is 299x299.
 
-
 ### ResNet
 The 2015 winner was [ResNet](https://arxiv.org/pdf/1512.03385.pdf), the Microsoft Research's submission. Its main difference is that it has 152 layers (AlexNet had 18, VGG 19 and GoogLeNet 22). It is mainly as repeated VGGs, but with connections that skip layers in order to be able to train such a deep network. It archived a 97% of accuracy, outperforming the human accuracy.
 
@@ -94,4 +89,15 @@ model = ResNet50(weights='imagenet', include_top=False)
 ```
 
 NOTE: ResNet50 uses a 224x224 input.
+
+
+## Further Reading
+- Behavioral Cloning
+  - [ChauffeurNet: Learning to Drive by Imitating the Best and Synthesizing the Worst](https://arxiv.org/abs/1812.03079), by M. Bansal, A. Krizhevsky and A. Ogale. 
+- Object Detection and Tracking
+  - [SSD: Single Shot MultiBox Detector](https://arxiv.org/abs/1512.02325), by W. Liu, et. al. 
+  - [VoxelNet: End-to-End Learning for Point Cloud Based 3D Object Detection](https://arxiv.org/abs/1711.06396), by Y. Zhou and O. Tuzel. 
+  - [Fast and Furious: Real Time End-to-End 3D Detection, Tracking and Motion Forecasting with a Single Convolutional Net](http://openaccess.thecvf.com/content_cvpr_2018/papers/Luo_Fast_and_Furious_CVPR_2018_paper.pdf), by W. Luo, et. al. 
+- Semantic Segmentation
+  - [SegNet: A Deep Convolutional Encoder-Decoder Architecture for Image Segmentation](https://arxiv.org/abs/1511.00561), by V. Badrinarayanan, A. Kendall and R. Cipolla. 
 

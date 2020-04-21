@@ -6,8 +6,8 @@ They were invented over 30 years ago, but since 2012 they have become really pop
 
 The *translation invariance* tells our networks that it has to, for example, find dogs, wherever they are on the images. If it knows that dogs in the bottom left corner and dogs in the top right one will look the same, it will be easier for the model to adjust itself to solve the problem. Same happends with text processing. The word *dog* means the same wether it is on the first or in the fifth line. In these situations, we can use **weight sharing** to help the network learn what a *dog* is in order to be able to use this knowledge in several parts of its architecture. This consists in, when we know that two different inputs contain the same information, we will share their weights. This idea will lead us to Convolutional Neural Networks (CNNs) for images or to Embeddings and Recurrent Neural Networks for text and other types of sequences.
 
-## Introduction to CNNs
 
+## Introduction to CNNs
 The CNNs or *covnets* share their parameters across the space (the convolution kernel). We will substitue the weights for blocks of convolutions. They will reduce the height and width of our image and increase its depth (channel number). The more depth we get, the more semantic complexity we will be able to model. At the end we will have a classifier that will turn really high-level features into our output (i.e. which animal apears in the picture).
 
 Some essential concepts are:
@@ -42,9 +42,7 @@ padding = 'SAME' # same pading is the same as 1 pixel padding # same pading is t
 conv = tf.nn.conv2d(input, filter_weights, strides, padding) + filter_bias
 ```
 
-
 ### Basic CNNs in TensorFlow
-
 TF has the `tf.nn.conv2d()` and `tf.nn.bias_add()` functions that we can use to create convolutional layers as shown in the next code. We need the *bias_add*-specific function because the conventional `tf.add` will not work if the arguments do not have the same dimensions.
 
 ```
@@ -77,10 +75,9 @@ conv_layer = tf.nn.bias_add(conv_layer, bias)
 conv_layer = tf.nn.relu(conv_layer)
 ```
 
-## Advanced covnet-ology
 
+## Advanced Covnet-ology
 ### Pooling
-
 We can use **pooling** to reduce the dimensionality of our feature maps. We can also use the stride for that, but we lose information. *Pooling* consists in combining several of the obtained results. The most common pooling operation is ***max pooling***, which consists in taking a neighbourhood and keeping only the highest value on it. This does not increase the number of parameters and usually provide more accurate results. However, since we are substituting stride with this, the computation cost is higher and it also introduces the pooling kernel size and its stride.
 
 A common architecture of CNNs is alternate convolutions with max pooling several times and end up with a few fully-connected layers that will send their logits to a softmax.
@@ -101,20 +98,21 @@ conv_layer = tf.nn.max_pool(
     padding='SAME')
 ```
 
-### 1x1 convolutions
-
+### 1x1 Convolutions
 Instead of looking to a patch of the image, they only look into one pixel. This means that, instead of a linear classifier for the whole path, if we add a 1x1 convolution after it, we will have a mini NN running over the patch. This allows us to make our models deeper and with more parameters in a cheap way and without changing the CNN's structure. They are cheap because they are not convolutions, only matrix multiplications.
 
-### Inception modules
-
+### Inception Modules
 They use both pooling and 1x1 convolutions. The idea is to be able to choose at every step what is the model going to apply (pooling or convolution? If it is a convolutionm, of which size?) This is done by, in one layer, introduce an average pooling followed by a 1x1 convolution, then a 1x1 convolution, then a 1x1 conv followed by a 3x3 one and then a 1x1 followed by a 5x5. Finally, we will just concatenate the 4 outputs.
 
 
 ## Scripts
-
 In the scripts contained in this folder, you will be able to find a TensorFlow1 implementation of a convolutional layer (*01_tf_conv_layer.ipynb*), another of a pooling layer (*02_tf_pool_layer.ipynb*) and anotherone of the LeNet network (*03_LeNet_Lab.ipynb*)
 
 
+## Further Reading
+The following are some free resources to go into more depth in Deep Learning:
 
-
+- Andrej Karpathy's [CS231n Stanford course](http://cs231n.github.io/) on Convolutional Neural Networks.
+- Michael Nielsen's [free book](http://neuralnetworksanddeeplearning.com/) on Deep Learning.
+- Goodfellow, Bengio, and Courville's more advanced [free book](http://deeplearningbook.org/) on Deep Learning.
 

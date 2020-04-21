@@ -29,3 +29,7 @@ Given this *intersection trick*, we can use points in the *XY* space (image), co
 Once having the points associated to edges (thanks to the Canny algorithm), we can fordward these points into a Hough transformation to search for intersections and, therefore, lines that connect these Canny-obtained sparse points.
 
 When having several points, such as a *sampling* of a square, we will have certain points in Hough space with more intersections, that will be the ones connecting more points (the vertex of the square connect all the points in the edges of it) and some other intersections that will connect less points (each point with each other, such as de diagonals).
+
+
+## Further Reading
+Parameter tuning can be tedious and confusing. Even with experience an intuition of which parameters may work better is built, it is always useful to have some sort of help during this process. In [this blog](https://medium.com/@maunesh/finding-the-right-parameters-for-your-computer-vision-algorithm-d55643b6f954), a tool for tuning OpenCV parameters is discused applied to this course.

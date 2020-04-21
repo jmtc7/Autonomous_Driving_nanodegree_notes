@@ -11,10 +11,8 @@ We will need to put particles covering the places where our car could be. Withou
 
 This step is implemented in the *00_sampling.cpp* file, using 2 m of uncertainty in X and Y for the GPS location.
 
-
 ### Prediction Step
 We apply the motion model (using the yaw rate and velocity) to each particle. We will add gaussian noise to both the velocity and yaw rate because the robot's movement may be innacurate. We implmement this by simply using the motion model. We should use the general equations if the yaw rate is not 0.
-
 
 ### Update Step
 This consists in computing the importance weights of the particles. We use the map to know where the landmarks should be for each particle and the observation made by the robot to know how far/close each particle is from the expected observation.
@@ -29,10 +27,8 @@ However, if we use sensors that provides us with very dense data, we might miss-
 #### Weight Computation
 Once having the correspondences of the data, we can use the *Multivariate Gaussian Probability Density* function for each measurement and combine the likelihoods of each one of them to compute the importance weight of each particle. It assumes gaussian noise in the measurements and independence between them.
 
-
 ### Resampling
 Finally, we will resample our particle collection according to its importance weights. After the resampling, we will go back to the prediction step.
-
 
 
 ## Evaluation measures
@@ -60,8 +56,7 @@ Some additional resources related to this are:
 - [Coordinate Transformation Under Rotation](https://www.miniphysics.com/coordinate-transformation-under-rotation.html)
 
 
-
-## Additional resources on localization
+## Further Reading
 - Simultaneous Localization and Mapping (SLAM):
   - [Past, Present, and Future of Simultaneous Localization And Mapping: Towards the Robust-Perception Age](https://arxiv.org/abs/1606.05830) by C. Cadena, et. al.
   - [Navigating the Landscape for Real-time Localisation and Mapping for Robotics and Virtual and Augmented Reality](https://arxiv.org/abs/1808.06352) by S. Saeedi, et. al.
