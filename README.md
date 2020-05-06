@@ -2,7 +2,9 @@
 
 [![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 
-This repository contains both the **notes and** the **challenges** that I have taken and done during my Self-Driving Car Nanodegree at Udacity. The **big final projects** of each module are in their own independent repositories in my profile (those starting by *CarND-Pm*).
+This repository contains both the **notes and** the **challenges** that I have taken and done during my Self-Driving Car Nanodegree at Udacity. The **big final projects** of each module are in their own independent repositories in my profile (those starting by *CarND-Pm*). However, demos of many of them can be found in the following YouTube playlist:
+
+[![YT playlist with demos](demo.gif)](https://www.youtube.com/playlist?list=PLBYQePjTMEGHs3_8FcL-ive4ORW_0uOjU)
 
 ## Structure
 
